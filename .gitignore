@@ -1,0 +1,41 @@
+# ==========================================
+# drone-project/.gitignore
+# ==========================================
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
+
+# ------------------------------------------
+# ROS 2 Workspace (ros2_ws)
+# ------------------------------------------
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+ros2_ws/src/CMakeLists.txt
+
+# ------------------------------------------
+# Simulation & PX4 (simulation)
+# ------------------------------------------
+# Ignore log files and temporary simulation data
+*.log
+*.ulg
+simulation/.build/
+
+# ------------------------------------------
+# Python & C++ Caches
+# ------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.o
+*.so
+*.os
+
+# ------------------------------------------
+# IDEs and Editors
+# ------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
