@@ -46,6 +46,7 @@ class OffboardController(Node):
         self.arming_state = VehicleStatus.ARMING_STATE_DISARMED
         self.pos = (0.0, 0.0, 0.0)
         self.tick = 0
+        self.hold_ticks = 0
 
         #Waypoint (NED)
         self.hover_z = -2.0
@@ -56,6 +57,7 @@ class OffboardController(Node):
         self.reached_hover = False
         self.reached_waypoint = False
         self.REACH_THRESHOLD = 0.3
+        self.sent_landing_command = False
 
         # 20 Hz control loop
         self.create_timer(0.05, self.timer_cb)
@@ -119,8 +121,13 @@ class OffboardController(Node):
                 self.get_logger().info('Waypoint reached - holding position')
             return
         
-        # Phase 5: hold at waypoint indefinitely
+        # Phase 5: hold then land
         self._publish_setpoint(*self.waypoint)
+        self.hold_ticks += 1
+        if self.hold_ticks >= 60 and not self.sent_landing_command:
+            self._send_vehicle_command(VehicleCommand.VEHICLE_CMD_NAV_LAND)
+            self.sent_landing_command = True
+        return
 
     
     #------------------------------------------------#
