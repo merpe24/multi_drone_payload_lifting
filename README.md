@@ -88,7 +88,7 @@ cd ~/ros2_ws/src
 # Listen to drone position
 python3 drone_listener.py
 
-# Full offboard control (arm → hover → waypoint → hold)
+# Full offboard control (arm → hover → waypoint → hold → land → disarm)
 python3 offboard_control.py
 ```
 
@@ -111,7 +111,7 @@ python3 offboard_control.py
 ## Current Progress
 
 - [x] Simulation environment working
-- [x] Single drone offboard control (arm → hover → waypoint → hold)
+- [x] Single drone offboard control (arm → hover → waypoint → hold → land → disarm)
 - [ ] Multi-drone simulation
 - [ ] Drone-to-drone facing algorithm
 - [ ] UWB driver
