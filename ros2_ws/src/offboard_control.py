@@ -58,6 +58,7 @@ class OffboardController(Node):
         self.reached_waypoint = False
         self.REACH_THRESHOLD = 0.3
         self.sent_landing_command = False
+        self.landing_complete = False
 
         # 20 Hz control loop
         self.create_timer(0.05, self.timer_cb)
@@ -122,12 +123,19 @@ class OffboardController(Node):
             return
         
         # Phase 5: hold then land
-        self._publish_setpoint(*self.waypoint)
-        self.hold_ticks += 1
-        if self.hold_ticks >= 60 and not self.sent_landing_command:
-            self._send_vehicle_command(VehicleCommand.VEHICLE_CMD_NAV_LAND)
-            self.sent_landing_command = True
-        return
+        if not self.sent_landing_command:
+            self._publish_setpoint(*self.waypoint)
+            self.hold_ticks += 1
+            if self.hold_ticks >=60:
+                self._send_vehicle_command(VehicleCommand.VEHICLE_CMD_NAV_LAND)
+                self.sent_landing_command = True
+        
+    
+        # Phase 6: detect landing and log
+        if self.sent_landing_command and not self.landing_complete:
+            if self.arming_state == 1: # disarmed: 1, armed: 2
+                self.get_logger().info('Landing detected - drone disarmed.')
+                self.landing_complete = True
 
     
     #------------------------------------------------#
@@ -155,6 +163,10 @@ class OffboardController(Node):
     def _arm(self):
         self._send_vehicle_command(VehicleCommand.VEHICLE_CMD_COMPONENT_ARM_DISARM, 1.0)
         self.get_logger().info('Arm command sent.')
+
+    def _disarm(self):
+        self._send_vehicle_command(VehicleCommand.VEHICLE_CMD_COMPONENT_ARM_DISARM, 0.0)
+        self.get_logger().info('Disarm command sent.')
 
     def _send_vehicle_command(self, command: int, param1=0.0, param2=0.0):
         msg = VehicleCommand()
