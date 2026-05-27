@@ -12,7 +12,7 @@ from px4_msgs.msg import (
 class OffboardController(Node):
     """
     Minimal offboard controller.
-    State machine: PREFLIGHT --> ARMING --> OFFBOARD --> HOVER --> WAYPOINT --> HOLD
+    State machine: PREFLIGHT --> ARMING --> OFFBOARD --> HOVER --> WAYPOINT --> HOLD --> LAND
     """
 
     def __init__(self):
