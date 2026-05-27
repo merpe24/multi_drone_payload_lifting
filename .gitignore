@@ -21,6 +21,7 @@ ros2_ws/src/CMakeLists.txt
 *.log
 *.ulg
 simulation/.build/
+ros2_ws/src/px4_msgs/
 
 # ------------------------------------------
 # Python & C++ Caches
@@ -39,4 +40,3 @@ __pycache__/
 .idea/
 *.swp
 *.swo
-ros2_ws/src/px4_msgs/
