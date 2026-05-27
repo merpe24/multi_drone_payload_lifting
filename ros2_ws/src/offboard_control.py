@@ -12,7 +12,7 @@ from px4_msgs.msg import (
 class OffboardController(Node):
     """
     Minimal offboard controller.
-    State machine: PREFLIGHT --> ARMING --> OFFBOARD --> HOVER --> WAYPOINT --> HOLD --> LAND
+    State machine: PREFLIGHT --> ARMING --> OFFBOARD --> HOVER --> WAYPOINT --> HOLD --> LAND --> DISARMED
     """
 
     def __init__(self):
@@ -27,17 +27,17 @@ class OffboardController(Node):
 
         # Publishers
         self.ocm_pub = self.create_publisher(
-            OffboardControlMode, '/fmu/in/offboard_control_mode', px4_qos)
+            OffboardControlMode, 'fmu/in/offboard_control_mode', px4_qos)
         self.sp_pub = self.create_publisher(
-            TrajectorySetpoint, '/fmu/in/trajectory_setpoint', px4_qos)
+            TrajectorySetpoint, 'fmu/in/trajectory_setpoint', px4_qos)
         self.cmd_pub = self.create_publisher(
-            VehicleCommand, '/fmu/in/vehicle_command', px4_qos)
+            VehicleCommand, 'fmu/in/vehicle_command', px4_qos)
         
         # Subscribers
         self.create_subscription(
-            VehicleStatus, '/fmu/out/vehicle_status_v4', self.status_cb, px4_qos)
+            VehicleStatus, 'fmu/out/vehicle_status_v4', self.status_cb, px4_qos)
         self.create_subscription(
-            VehicleLocalPosition, '/fmu/out/vehicle_local_position_v1',
+            VehicleLocalPosition, 'fmu/out/vehicle_local_position_v1',
             self.position_cb, px4_qos)
         
 
@@ -64,10 +64,21 @@ class OffboardController(Node):
         self.create_timer(0.05, self.timer_cb)
         self.get_logger().info('Offboard controller ready.')
 
+        # Drone identity
+        namespace = self.get_namespace()
+        self.get_logger().info(f'Namespace: {namespace}')
 
-        #------------------------------------------------#
-        # Callbacks                                       #
-        #------------------------------------------------#
+        if namespace == '/':
+            self.instance = 0
+        else:
+            self.instance = int(namespace.split('_')[-1])
+
+        self.get_logger().info(f'Instance: {self.instance}, target_system: {self.instance + 1}')
+
+
+    #------------------------------------------------#
+    # Callbacks                                       #
+    #------------------------------------------------#
 
     def status_cb(self, msg: VehicleStatus):
         self.nav_state = msg.nav_state
@@ -174,7 +185,7 @@ class OffboardController(Node):
         msg.command = command
         msg.param1 = param1
         msg.param2 = param2
-        msg.target_system = 1
+        msg.target_system = self.instance + 1
         msg.target_component = 1
         msg.source_system = 1
         msg.source_component = 1
