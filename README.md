@@ -60,22 +60,33 @@ cd ~/src/PX4-gazebo-models
 python3 simulation-gazebo --world=default
 ```
 
-**Terminal 2 — PX4 SITL**
+**Terminal 2 — PX4 SITL (first drone)**
 ```bash
 cd ~/src/PX4-Autopilot
 PX4_GZ_STANDALONE=1 PX4_GZ_WORLD=default make px4_sitl gz_x500
 ```
 
-**Terminal 3 — uXRCE-DDS bridge**
+**Terminal 3 — PX4 SITL (second drone)**
+```bash
+cd ~/src/PX4-Autopilot
+PX4_GZ_STANDALONE=1 \
+PX4_GZ_WORLD=default \
+PX4_SYS_AUTOSTART=4001 \
+PX4_GZ_MODEL_POSE="2,0,0,0,0,0" \
+PX4_INSTANCE=1 \
+./build/px4_sitl_default/bin/px4 -i 1
+```
+
+**Terminal 4 — uXRCE-DDS bridge**
 ```bash
 MicroXRCEAgent udp4 -p 8888
 ```
 
-**Terminal 4 — ROS 2 workspace**
+**Terminal 5 — ROS 2 workspace**
 ```bash
 source ~/.bashrc
 source /opt/ros/jazzy/setup.bash
-source ~/ros2_ws/install/setup.bash
+source ~/Projects/multi_drone_payload_lifting/ros2_ws/install/setup.bash
 ```
 
 ---
@@ -83,13 +94,17 @@ source ~/ros2_ws/install/setup.bash
 ## Running the Nodes
 
 ```bash
-cd ~/ros2_ws/src
+cd ~/Projects/multi_drone_payload_lifting/ros2_ws/src
 
 # Listen to drone position
 python3 drone_listener.py
 
 # Full offboard control (arm → hover → waypoint → hold → land → disarm)
+#Terminal A - drone 1 (no namespace)
 python3 offboard_control.py
+
+#Terminal B - drone 2 
+python3 offboard_control.py --ros-args -r __ns:=/px4_1
 ```
 
 > ⚠️ Make sure all 4 simulation terminals are running before launching any node.  
@@ -112,7 +127,7 @@ python3 offboard_control.py
 
 - [x] Simulation environment working
 - [x] Single drone offboard control (arm → hover → waypoint → hold → land → disarm)
-- [ ] Multi-drone simulation
+- [x] Multi-drone simulation
 - [ ] Drone-to-drone facing algorithm
 - [ ] UWB driver
 - [ ] Hardware assembly
