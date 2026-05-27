@@ -39,3 +39,4 @@ __pycache__/
 .idea/
 *.swp
 *.swo
+ros2_ws/src/px4_msgs/
