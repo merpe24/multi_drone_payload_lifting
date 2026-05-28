@@ -13,7 +13,7 @@ class DroneListener(Node):
         )
         self.create_subscription(
             VehicleLocalPosition,
-            '/fmu/out/vehicle_local_position_v1',
+            'fmu/out/vehicle_local_position_v1',
             self.callback,
             qos
         )
