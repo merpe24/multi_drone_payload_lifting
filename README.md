@@ -100,10 +100,10 @@ cd ~/Projects/multi_drone_payload_lifting/ros2_ws/src
 python3 drone_listener.py
 
 # Full offboard control (arm → hover → waypoint → hold → land → disarm)
-#Terminal A - drone 1 (no namespace)
+# Terminal A - drone 1 (no namespace)
 python3 offboard_control.py
 
-#Terminal B - drone 2 
+# Terminal B - drone 2 
 python3 offboard_control.py --ros-args -r __ns:=/px4_1
 ```
 
@@ -128,7 +128,7 @@ python3 offboard_control.py --ros-args -r __ns:=/px4_1
 - [x] Simulation environment working
 - [x] Single drone offboard control (arm → hover → waypoint → hold → land → disarm)
 - [x] Multi-drone simulation
-- [ ] Drone-to-drone facing algorithm
+- [x] Drone-to-drone facing algorithm
 - [ ] UWB driver
 - [ ] Hardware assembly
 - [ ] Port to real drones
