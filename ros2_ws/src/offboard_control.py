@@ -1,4 +1,5 @@
 import rclpy
+import math
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy, DurabilityPolicy
 from px4_msgs.msg import (
@@ -18,12 +19,26 @@ class OffboardController(Node):
     def __init__(self):
         super().__init__('offboard_controller')
 
+        # Drone identity
+        namespace = self.get_namespace()
+        self.get_logger().info(f'Namespace: {namespace}')
+        if namespace == '/':
+            self.instance = 0
+        else:
+            self.instance = int(namespace.split('_')[-1])
+        self.get_logger().info(f'Instance: {self.instance}, target_system: {self.instance + 1}')
+
+        total_drones = 2
+        drones_dict = {i: '' if i == 0 else f'px4_{i}' for i in range(0, total_drones)} # {0: '', 1: 'px4_1}
+
+
         px4_qos = QoSProfile(
             reliability=ReliabilityPolicy.BEST_EFFORT,
             history=HistoryPolicy.KEEP_LAST,
             durability=DurabilityPolicy.TRANSIENT_LOCAL,
             depth=1,
         )
+
 
         # Publishers
         self.ocm_pub = self.create_publisher(
@@ -39,12 +54,17 @@ class OffboardController(Node):
         self.create_subscription(
             VehicleLocalPosition, 'fmu/out/vehicle_local_position_v1',
             self.position_cb, px4_qos)
+        self.create_subscription(
+            VehicleLocalPosition, f'{drones_dict[(self.instance +1) % 2]}/fmu/out/vehicle_local_position_v1',
+            self.companion_pos_cb, px4_qos)
         
 
         # State
         self.nav_state = VehicleStatus.NAVIGATION_STATE_MAX
         self.arming_state = VehicleStatus.ARMING_STATE_DISARMED
         self.pos = (0.0, 0.0, 0.0)
+        self.companion_pos = (0.0, 0.0, 0.0)
+        self.current_yaw = 0
         self.tick = 0
         self.hold_ticks = 0
 
@@ -52,28 +72,19 @@ class OffboardController(Node):
         self.hover_z = -2.0
         self.waypoint = (3.0, 0.0, -2.0)
 
-        # State variables
+        # Flag variables
         self.offboard = False
         self.reached_hover = False
         self.reached_waypoint = False
         self.REACH_THRESHOLD = 0.3
         self.sent_landing_command = False
         self.landing_complete = False
+        self.yaw_initialized = False
 
         # 20 Hz control loop
         self.create_timer(0.05, self.timer_cb)
         self.get_logger().info('Offboard controller ready.')
 
-        # Drone identity
-        namespace = self.get_namespace()
-        self.get_logger().info(f'Namespace: {namespace}')
-
-        if namespace == '/':
-            self.instance = 0
-        else:
-            self.instance = int(namespace.split('_')[-1])
-
-        self.get_logger().info(f'Instance: {self.instance}, target_system: {self.instance + 1}')
 
 
     #------------------------------------------------#
@@ -87,6 +98,10 @@ class OffboardController(Node):
     def position_cb(self, msg: VehicleLocalPosition):
         self.pos = (msg.x, msg.y, msg.z)
 
+    def companion_pos_cb(self, msg: VehicleLocalPosition):
+        self.companion_pos = (msg.x, msg.y, msg.z)
+        #self.get_logger().info(f'companion_pos updated: {self.companion_pos}')
+
 
     #------------------------------------------------#
     # Main 20 Hz loop                                 #
@@ -94,6 +109,8 @@ class OffboardController(Node):
 
     def timer_cb(self):
         self.tick += 1
+        self.facing_yaw = self._compute_facing_yaw(self.pos, self.companion_pos)
+        # self.get_logger().info(f'yaw={self.facing_yaw:.3f} pos={self.pos} companion={self.companion_pos}') # Check facing_yaw
 
         # Always publish ocm(offboard control mode) to keep px4 from bailing out of ocm
         self._publish_ocm()
@@ -127,7 +144,7 @@ class OffboardController(Node):
 
         # Phase 4: fly to way point
         if not self.reached_waypoint:
-            self._publish_setpoint(*self.waypoint)
+            self._publish_setpoint(*self.waypoint, self.facing_yaw)
             if self._distance_to(*self.waypoint) < self.REACH_THRESHOLD:
                 self.reached_waypoint = True
                 self.get_logger().info('Waypoint reached - holding position')
@@ -135,9 +152,9 @@ class OffboardController(Node):
         
         # Phase 5: hold then land
         if not self.sent_landing_command:
-            self._publish_setpoint(*self.waypoint)
+            self._publish_setpoint(*self.waypoint,self.facing_yaw)
             self.hold_ticks += 1
-            if self.hold_ticks >=60:
+            if self.hold_ticks >=100:
                 self._send_vehicle_command(VehicleCommand.VEHICLE_CMD_NAV_LAND)
                 self.sent_landing_command = True
         
@@ -197,6 +214,33 @@ class OffboardController(Node):
         dy = self.pos[1] - ty
         dz = self.pos[2] - tz
         return (dx**2 + dy**2 + dz**2) ** 0.5
+    
+    def _compute_facing_yaw(self, pos, companion_pos):
+        alpha = 0.05
+        dx = companion_pos[0] - pos[0]
+        dy = companion_pos[1] - pos[1]
+
+        # Safeguard if both drones are in the same position
+        if dx == 0 and dy == 0:
+            return self.current_yaw
+        
+        target_yaw = math.atan2(dy, dx)
+        # self.get_logger().info(f'target_yaw = {target_yaw}') # Check target_yaw
+        
+        # snap current_yaw to the real angle instead of starting from 0 and let it aggressive swing to the target_yaw
+        if not self.yaw_initialized and self.companion_pos != (0.0, 0.0, 0.0):
+            self.current_yaw = target_yaw
+            self.yaw_initialized = True
+
+        # P Controller
+        
+        # Normalize error to [-pi, pi]
+        error = target_yaw - self.current_yaw
+        error = (error + math.pi) % (2 * math.pi) - math.pi
+
+        new_yaw = self.current_yaw + alpha * error
+        self.current_yaw = new_yaw
+        return new_yaw
     
     def _now(self) -> int:
         return self.get_clock().now().nanoseconds // 1000 # PX4 uses nanosecond
