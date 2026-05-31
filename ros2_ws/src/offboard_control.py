@@ -63,14 +63,20 @@ class OffboardController(Node):
         self.nav_state = VehicleStatus.NAVIGATION_STATE_MAX
         self.arming_state = VehicleStatus.ARMING_STATE_DISARMED
         self.pos = (0.0, 0.0, 0.0)
-        self.companion_pos = (0.0, 0.0, 0.0)
+        self.companion_pos = (0.0, 0.0, 0.0)    
         self.current_yaw = 0
+        self.facing_yaw = 0.0
         self.tick = 0
         self.hold_ticks = 0
 
         #Waypoint (NED)
         self.hover_z = -2.0
-        self.waypoint = (3.0, 0.0, -2.0)
+
+        waypoints = {
+            0: (5.0, -1.0, -2.0),
+            1: (5.0, 1.0, -2.0)
+        }
+        self.waypoint = waypoints[self.instance]
 
         # Flag variables
         self.offboard = False
@@ -109,7 +115,8 @@ class OffboardController(Node):
 
     def timer_cb(self):
         self.tick += 1
-        self.facing_yaw = self._compute_facing_yaw(self.pos, self.companion_pos)
+        if self._distance_to(*self.waypoint) < 2.0:
+            self.facing_yaw = self._compute_relative_yaw(self.pos, self.companion_pos)
         # self.get_logger().info(f'yaw={self.facing_yaw:.3f} pos={self.pos} companion={self.companion_pos}') # Check facing_yaw
 
         # Always publish ocm(offboard control mode) to keep px4 from bailing out of ocm
@@ -117,13 +124,13 @@ class OffboardController(Node):
 
         # Phase 1:
         # First 10 ticks (0.5 s) pre-publishing setpoints so PX4 sees a stream before we request the mode switch
-        if self.tick < 10:
-            self._publish_setpoint(0.0, 0.0, 0.0)
+        if self.tick < 40:
+            self._publish_setpoint(self.pos[0], self.pos[1], self.pos[2])
             return
 
         # Phase 2: arm + switch to offboard once on tick 10 
         # It should switch to offboard first, then arm
-        if self.tick == 10:
+        if self.tick == 40:
             self._send_vehicle_command(
                 VehicleCommand.VEHICLE_CMD_DO_SET_MODE, 1.0, 6.0) # offboard
 
@@ -215,7 +222,7 @@ class OffboardController(Node):
         dz = self.pos[2] - tz
         return (dx**2 + dy**2 + dz**2) ** 0.5
     
-    def _compute_facing_yaw(self, pos, companion_pos):
+    def _compute_relative_yaw(self, pos, companion_pos):
         alpha = 0.05
         dx = companion_pos[0] - pos[0]
         dy = companion_pos[1] - pos[1]
@@ -237,10 +244,14 @@ class OffboardController(Node):
         # Normalize error to [-pi, pi]
         error = target_yaw - self.current_yaw
         error = (error + math.pi) % (2 * math.pi) - math.pi
+        error_threshold = math.pi/72
 
-        new_yaw = self.current_yaw + alpha * error
-        self.current_yaw = new_yaw
-        return new_yaw
+        if abs(error) < error_threshold:
+            return self.current_yaw
+        else:
+            new_yaw = self.current_yaw + alpha * error
+            self.current_yaw = new_yaw
+            return new_yaw
     
     def _now(self) -> int:
         return self.get_clock().now().nanoseconds // 1000 # PX4 uses nanosecond
