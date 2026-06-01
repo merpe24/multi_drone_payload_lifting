@@ -151,7 +151,12 @@ class OffboardController(Node):
 
         # Phase 4: fly to way point
         if not self.reached_waypoint:
-            self._publish_setpoint(*self.waypoint, self.facing_yaw)
+            max_cable_length = 2.1
+            if self._distance_to(*self.companion_pos) > max_cable_length:
+                self.get_logger().info(f'Cable taut! companion_dist={self._distance_to(*self.companion_pos):.2f} pos={self.pos}')
+                self._publish_setpoint(*self.pos)
+            else:
+                self._publish_setpoint(*self.waypoint, self.facing_yaw) 
             if self._distance_to(*self.waypoint) < self.REACH_THRESHOLD:
                 self.reached_waypoint = True
                 self.get_logger().info('Waypoint reached - holding position')
