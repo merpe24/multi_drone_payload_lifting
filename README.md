@@ -11,7 +11,7 @@ using UWB relative localisation and ROS 2 offboard control.
 ```
 multi_drone_payload_lifting/
 ├── ros2_ws/        # ROS 2 nodes (offboard control, UWB driver, facing algorithm)
-├── simulation/     # Gazebo worlds, PX4 configs
+├── simulation/     # Gazebo worlds, cable plugin, CMakeLists
 ├── hardware/       # Wiring diagrams, CAD files, BOM
 └── docs/           # Calculations, meeting notes, report drafts
 ```
@@ -44,56 +44,78 @@ Install the following before cloning this repo:
 ```bash
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 export ROS_DOMAIN_ID=0
+export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:$HOME/Projects/multi_drone_payload_lifting/simulation/worlds
+export GZ_SIM_SYSTEM_PLUGIN_PATH=$GZ_SIM_SYSTEM_PLUGIN_PATH:$HOME/src/PX4-Autopilot/build/px4_sitl_default/src/modules/simulation/gz_plugins
+export GZ_SIM_SYSTEM_PLUGIN_PATH=$GZ_SIM_SYSTEM_PLUGIN_PATH:$HOME/Projects/multi_drone_payload_lifting/simulation/build
+```
+
+---
+
+## Building the Cable Plugin
+
+```bash
+cd ~/Projects/multi_drone_payload_lifting/simulation
+mkdir -p build && cd build
+cmake .. && make
+```
+Output: `simulation/build/libcable_plugin.so`
+
+After editing `cable_world.sdf`, always deploy it:
+```bash
+cp ~/Projects/multi_drone_payload_lifting/simulation/worlds/cable_world.sdf ~/.simulation-gazebo/worlds/
 ```
 
 ---
 
 ## Running the Simulation
 
-Open 5 terminals in this exact order:
+Open 7 terminals in this exact order:
 
-**Terminal 1 — Gazebo world**
+**Terminal 1 — uXRCE-DDS bridge**
 ```bash
-cd ~/src/PX4-gazebo-models
-python3 simulation-gazebo --world=default
+MicroXRCEAgent udp4 -p 8888
 ```
 
-**Terminal 2 — PX4 SITL (first drone)**
+**Terminal 2 — QGroundControl** (optional, for monitoring)
+```bash
+./QGroundControl.AppImage
+```
+
+**Terminal 3 — Gazebo world**
+```bash
+python3 ~/src/PX4-gazebo-models/simulation-gazebo --world cable_world
+```
+
+**Terminal 4 — PX4 SITL (drone 0)**
 ```bash
 cd ~/src/PX4-Autopilot
-PX4_GZ_STANDALONE=1 PX4_GZ_WORLD=default make px4_sitl gz_x500
+PX4_GZ_STANDALONE=1 PX4_GZ_WORLD=cable_world make px4_sitl gz_x500
 ```
 
-**Terminal 3 — PX4 SITL (second drone)**
+**Terminal 5 — PX4 SITL (drone 1)**
 ```bash
 cd ~/src/PX4-Autopilot
 PX4_GZ_STANDALONE=1 \
-PX4_GZ_WORLD=default \
+PX4_GZ_WORLD=cable_world \
 PX4_SYS_AUTOSTART=4001 \
 PX4_GZ_MODEL_POSE="2,0,0,0,0,0" \
 PX4_INSTANCE=1 \
 ./build/px4_sitl_default/bin/px4 -i 1
 ```
 
-**Terminal 4 — uXRCE-DDS bridge**
+**Terminals 6 & 7 — ROS 2 nodes**
 ```bash
-MicroXRCEAgent udp4 -p 8888
+cd ~/Projects/multi_drone_payload_lifting/ros2_ws/src
+./launch_formation.sh
 ```
-
-**Terminal 5 — ROS 2 workspace**
-```bash
-source ~/.bashrc
-source /opt/ros/jazzy/setup.bash
-source ~/Projects/multi_drone_payload_lifting/ros2_ws/install/setup.bash
-```
-
----
-
-## Running the Nodes
 
 > ⚠️ Wait for `INFO [commander] Ready for takeoff!` in **both** PX4 terminals before launching nodes.  
 > ⚠️ Kill all Python nodes with Ctrl+C before relaunching — stale nodes corrupt the setpoint stream.  
 > ⚠️ Always use `--spin-time 5` with `ros2 topic list` or topics won't appear.
+
+---
+
+## Running the Nodes
 
 ```bash
 cd ~/Projects/multi_drone_payload_lifting/ros2_ws/src
@@ -101,12 +123,12 @@ cd ~/Projects/multi_drone_payload_lifting/ros2_ws/src
 # Listen to drone position (optional debug)
 python3 drone_listener.py
 
-# Formation offboard control (arm → hover → waypoint → hold → land → disarm)
-# Terminal A — drone 1
-python3 offboard_control.py 2>&1 | tee drone1_log.txt
+# Formation offboard control — launches both drones simultaneously
+./launch_formation.sh
 
-# Terminal B — drone 2
-python3 offboard_control.py --ros-args -r __ns:=/px4_1 2>&1 | tee drone2_log.txt
+# Or launch individually:
+python3 offboard_control.py 2>&1 | tee drone1_log.txt                            # drone 0
+python3 offboard_control.py --ros-args -r __ns:=/px4_1 2>&1 | tee drone2_log.txt # drone 1
 ```
 
 **To filter logs after flight:**
@@ -118,13 +140,31 @@ cat drone1_log.txt | grep "keyword"
 
 ## What the Simulation Does
 
-1. Both drones spawn 2m apart, wait for EKF to settle (2 seconds)
+1. Both drones spawn 2m apart along world X axis, wait for EKF to settle
 2. Both arm and climb to 2m altitude
-3. Drone 1 flies to `(5, -1, -2)` NED, Drone 2 flies to `(5, 1, -2)` NED
-4. Both yaw to face each other (±π/2) while approaching waypoints
-5. Hold formation for 5 seconds, then land
+3. Both fly forward to local `(3, 0, -2)` NED via lerp-based trajectory
+   - Drone 0: world `(0,0,0)` → world `(3, 0, -2)`
+   - Drone 1: world `(2,0,0)` → world `(5, 0, -2)`
+   - World separation at destination: **2.0m along X** — cable stays slack
+4. Hold formation for 5 seconds, then land
+5. A yellow cylinder renders in Gazebo showing the cable between drones
 
-Formation separation at destination: **2m along Y axis**, symmetric around X=5.
+**Formation geometry note:** Waypoints are in each drone's local NED frame. Both drones use the same local waypoint `(3, 0, -2)` but end up 2m apart in world frame due to their spawn offset. Cable rest length is 2.05m — just enough slack at the destination.
+
+---
+
+## Cable Plugin
+
+Spring-damper cable connecting the two drones. Force only applied when cable is taut (stretched beyond rest length).
+
+**Parameters (in `cable_world.sdf`):**
+```xml
+<rest_length>2.05</rest_length>   <!-- cable length at which tension starts (m) -->
+<stiffness>150.0</stiffness>      <!-- spring constant k (N/m) -->
+<damping>20.0</damping>           <!-- damping d (N·s/m) -->
+```
+
+**Visual:** Yellow 3D cylinder, 2cm diameter, updates every physics tick via Gazebo marker API.
 
 ---
 
@@ -145,8 +185,10 @@ Formation separation at destination: **2m along Y axis**, symmetric around X=5.
 - [x] Single drone offboard control (arm → hover → waypoint → hold → land → disarm)
 - [x] Multi-drone simulation
 - [x] Drone-to-drone facing algorithm (P controller, angle unwrapping, deadband)
-- [x] Formation flying (instance-based waypoints, 2m separation, stable hold)
-- [ ] Payload simulation (cable attachment in Gazebo)
+- [x] Formation flying (lerp-based trajectory, stable hold)
+- [x] Cable plugin — physics (spring-damper, slack detection, no tilt)
+- [x] Cable plugin — visual (yellow cylinder via Gazebo marker API)
+- [ ] Payload attachment in Gazebo (hook + Dyneema model)
 - [ ] UWB driver
 - [ ] Hardware assembly
 - [ ] Port to real drones
