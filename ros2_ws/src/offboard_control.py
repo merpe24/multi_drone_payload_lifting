@@ -73,16 +73,25 @@ class OffboardController(Node):
         self.hover_z = -2.0
 
         waypoints = {
-            0: (5.0, -1.0, -2.0),
-            1: (5.0, 1.0, -2.0)
+            0: (3.0, 0.0, -2.0),
+            1: (3.0, 0.0, -2.0)
         }
+
         self.waypoint = waypoints[self.instance]
+
+        # Path tracking variables
+        self.start_pos = (0.0, 0.0, 0.0)
+        self.path_distance = 0.0
+        self.path_progress = 0.0
+        self.desired_speed = 1.0
+        self.dt = 0.05
+
 
         # Flag variables
         self.offboard = False
         self.reached_hover = False
         self.reached_waypoint = False
-        self.REACH_THRESHOLD = 0.3
+        self.REACH_THRESHOLD = 0.2
         self.sent_landing_command = False
         self.landing_complete = False
         self.yaw_initialized = False
@@ -115,7 +124,7 @@ class OffboardController(Node):
 
     def timer_cb(self):
         self.tick += 1
-        if self._distance_to(*self.waypoint) < 2.0:
+        if self._distance_to(*self.waypoint) < 1.0:
             self.facing_yaw = self._compute_relative_yaw(self.pos, self.companion_pos)
         # self.get_logger().info(f'yaw={self.facing_yaw:.3f} pos={self.pos} companion={self.companion_pos}') # Check facing_yaw
 
@@ -145,21 +154,32 @@ class OffboardController(Node):
             self._publish_setpoint(0.0, 0.0, self.hover_z)
             if self._distance_to(0.0, 0.0, self.hover_z) < self.REACH_THRESHOLD:
                 self.reached_hover = True
+
+                # Initiate path tracking variables
+                self.start_pos = self.pos
+                self.path_distance = self._distance_to(*self.waypoint)
+                self.path_progress = 0.0
+
+                # self.get_logger().info(f'start_pos={self.start_pos} waypoint={self.waypoint} path_distance={self.path_distance:.2f}')
+      
                 self.get_logger().info(
                     f'Hover reached: {self.pos} - flying to waypoint')
             return
 
         # Phase 4: fly to way point
         if not self.reached_waypoint:
-            max_cable_length = 2.1
-            if self._distance_to(*self.companion_pos) > max_cable_length:
-                self.get_logger().info(f'Cable taut! companion_dist={self._distance_to(*self.companion_pos):.2f} pos={self.pos}')
-                self._publish_setpoint(*self.pos)
-            else:
-                self._publish_setpoint(*self.waypoint, self.facing_yaw) 
-            if self._distance_to(*self.waypoint) < self.REACH_THRESHOLD:
+            # self.get_logger().info(f'companion_dist={self._distance_to(*self.companion_pos):.2f}')
+            self.path_progress += self.desired_speed * self.dt
+            if self.path_progress >= self.path_distance:
+                self.path_progress = self.path_distance
+
+            self.target = self._compute_lerp(self.path_progress, self.path_distance, self.start_pos, self.waypoint)
+            self._publish_setpoint(*self.target)
+
+            if self.path_progress >= self.path_distance and self._distance_to(*self.waypoint) < self.REACH_THRESHOLD:
                 self.reached_waypoint = True
                 self.get_logger().info('Waypoint reached - holding position')
+
             return
         
         # Phase 5: hold then land
@@ -169,6 +189,7 @@ class OffboardController(Node):
             if self.hold_ticks >=100:
                 self._send_vehicle_command(VehicleCommand.VEHICLE_CMD_NAV_LAND)
                 self.sent_landing_command = True
+            return
         
     
         # Phase 6: detect landing and log
@@ -176,6 +197,7 @@ class OffboardController(Node):
             if self.arming_state == 1: # disarmed: 1, armed: 2
                 self.get_logger().info('Landing detected - drone disarmed.')
                 self.landing_complete = True
+            return
 
     
     #------------------------------------------------#
@@ -205,7 +227,7 @@ class OffboardController(Node):
         self.get_logger().info('Arm command sent.')
 
     def _disarm(self):
-        self._send_vehicle_command(VehicleCommand.VEHICLE_CMD_COMPONENT_ARM_DISARM, 0.0)
+        self._send_vehicle_command(VehicleCommand.VEHICLE_CMD_COMPONENT_ARM_DISARM, 0.0, 21196.0)
         self.get_logger().info('Disarm command sent.')
 
     def _send_vehicle_command(self, command: int, param1=0.0, param2=0.0):
@@ -258,6 +280,13 @@ class OffboardController(Node):
             self.current_yaw = new_yaw
             return new_yaw
     
+    def _compute_lerp(self, progress, distance, start, end):
+        ratio = progress / distance if distance > 0 else 1.0
+        tx =  start[0] + (end[0] - start[0]) * ratio
+        ty =  start[1] + (end[1] - start[1]) * ratio
+        tz =  start[2] + (end[2] - start[2]) * ratio
+        return (tx, ty, tz)
+
     def _now(self) -> int:
         return self.get_clock().now().nanoseconds // 1000 # PX4 uses nanosecond
     
