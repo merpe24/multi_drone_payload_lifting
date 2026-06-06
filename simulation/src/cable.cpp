@@ -13,6 +13,10 @@
 #include <gz/math/Pose3.hh>
 #include <sdf/sdf.hh>
 #include <gz/msgs/wrench.pb.h>
+#include <gz/transport/Node.hh>
+#include <gz/msgs/marker.pb.h>
+#include <gz/math/Quaternion.hh>
+#include <gz/msgs/pose.pb.h>
 
 #include <iostream>
 #include <optional>
@@ -32,8 +36,8 @@ public:
                  EventManager &/*eventMgr*/) override
   {
     rest_length_ = sdf->Get<double>("rest_length", 2.2).first;
-    stiffness_   = sdf->Get<double>("stiffness",   150.0).first;
-    damping_     = sdf->Get<double>("damping",     20.0).first;
+    stiffness_   = sdf->Get<double>("stiffness",   50.0).first;
+    damping_     = sdf->Get<double>("damping",     30.0).first;
 
     std::cout << "[CablePlugin] Loaded."
               << " rest_length=" << rest_length_
@@ -84,9 +88,16 @@ public:
     math::Vector3d delta = pos1 - pos0;
     double current_length = delta.Length();
 
+    // --- Update visual marker every tick ---
+    UpdateCableMarker(pos0, pos1);
+
     // Cable is slack — no force
     if (current_length <= rest_length_)
+    {
+      ApplyForce(ecm, link0_, math::Vector3d::Zero);
+      ApplyForce(ecm, link1_, math::Vector3d::Zero);
       return;
+    }
 
     math::Vector3d unit = delta / current_length;
 
@@ -108,12 +119,63 @@ private:
   Entity link0_ = kNullEntity;
   Entity link1_ = kNullEntity;
   bool links_found_ = false;
+  gz::transport::Node transport_node_;
 
   double rest_length_ = 2.0;
   double stiffness_   = 150.0;
   double damping_     = 20.0;
 
+  // ---------------------------------------------------
+  // Visual: draw a red line between the two drone links
+  // ---------------------------------------------------
+  void UpdateCableMarker(const math::Vector3d &p0, const math::Vector3d &p1)
+{
+  gz::msgs::Marker marker;
+  marker.set_ns("cable");
+  marker.set_id(1);
+  marker.set_action(gz::msgs::Marker::ADD_MODIFY);
+  marker.set_type(gz::msgs::Marker::CYLINDER);
+
+  marker.mutable_lifetime()->set_sec(0);
+  marker.mutable_lifetime()->set_nsec(100000000);
+
+  // Midpoint position
+  math::Vector3d mid = (p0 + p1) / 2.0;
+
+  // Length of cable
+  double length = (p1 - p0).Length();
+
+  // Orientation: cylinder Z-axis must align with cable direction
+  math::Vector3d dir = (p1 - p0).Normalized();
+  math::Vector3d z_axis(0, 0, 1);
+  math::Quaterniond rot;
+  rot.From2Axes(z_axis, dir);
+
+  // Set pose (position + orientation)
+  gz::msgs::Set(marker.mutable_pose(),
+    math::Pose3d(mid, rot));
+
+  // Set scale: x/y = diameter, z = length
+  gz::msgs::Set(marker.mutable_scale(),
+    math::Vector3d(0.02, 0.02, length));  // 2cm diameter
+
+  // Yellow cable
+  auto *mat = marker.mutable_material();
+  mat->mutable_ambient()->set_r(1.0);
+  mat->mutable_ambient()->set_g(0.8);
+  mat->mutable_ambient()->set_b(0.0);
+  mat->mutable_ambient()->set_a(1.0);
+  mat->mutable_diffuse()->set_r(1.0);
+  mat->mutable_diffuse()->set_g(0.8);
+  mat->mutable_diffuse()->set_b(0.0);
+  mat->mutable_diffuse()->set_a(1.0);
+
+  transport_node_.Request("/marker", marker);
+}
+
+  // ---------------------------------------------------
   // Find the canonical (base) link of a named model
+  // ---------------------------------------------------
   Entity FindCanonicalLink(EntityComponentManager &ecm,
                            const std::string &model_name)
   {
@@ -139,6 +201,9 @@ private:
     return model.CanonicalLink(ecm);
   }
 
+  // ---------------------------------------------------
+  // Apply a world-frame force to a link via wrench cmd
+  // ---------------------------------------------------
   void ApplyForce(EntityComponentManager &ecm,
                   Entity link,
                   const math::Vector3d &force)

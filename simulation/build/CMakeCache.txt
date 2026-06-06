@@ -384,7 +384,7 @@ ZeroMQ_LIBRARY_zmq:FILEPATH=/usr/lib/x86_64-linux-gnu/libzmq.so
 assimp_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/assimp-5.3
 
 //Dependencies for the target
-cable_plugin_LIB_DEPENDS:STATIC=general;gz-sim8::gz-sim8;
+cable_plugin_LIB_DEPENDS:STATIC=general;gz-sim8::gz-sim8;general;gz-transport13::gz-transport13;
 
 //The directory containing a CMake configuration file for gz-cmake3.
 gz-cmake3_DIR:PATH=/opt/ros/jazzy/opt/gz_cmake_vendor/share/cmake/gz-cmake3

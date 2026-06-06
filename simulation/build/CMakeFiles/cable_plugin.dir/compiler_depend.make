@@ -70,6 +70,8 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
   /opt/ros/jazzy/opt/gz_math_vendor/include/gz/math7/gz/math/graph/Graph.hh \
   /opt/ros/jazzy/opt/gz_math_vendor/include/gz/math7/gz/math/graph/Vertex.hh \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/Export.hh \
+  /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/Factory.hh \
+  /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/MessageFactory.hh \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/PointCloudPackedUtils.hh \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/Utility.hh \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/actor.pb.h \
@@ -109,6 +111,7 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/density.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/detail/Export.hh \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/detail/PointCloudPackedUtils.hh \
+  /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/detail/dynamic_message_cast.hh \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/actor.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/air_pressure_sensor.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/air_speed_sensor.pb.h \
@@ -132,6 +135,7 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/double.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/double_v.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/ellipsoidgeom.pb.h \
+  /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/empty.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/entity.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/float.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/fog.pb.h \
@@ -157,6 +161,7 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/log_playback_stats.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/logical_camera_sensor.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/magnetometer_sensor.pb.h \
+  /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/marker.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/material.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/meshgeom.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/model.pb.h \
@@ -180,6 +185,7 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/sky.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/spheregeom.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/spherical_coordinates.pb.h \
+  /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/statistic.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/stringmsg.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/surface.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/time.pb.h \
@@ -199,6 +205,7 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/double.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/double_v.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/ellipsoidgeom.pb.h \
+  /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/empty.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/entity.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/float.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/fog.pb.h \
@@ -224,6 +231,7 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/log_playback_stats.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/logical_camera_sensor.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/magnetometer_sensor.pb.h \
+  /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/marker.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/material.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/meshgeom.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/model.pb.h \
@@ -247,6 +255,7 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/sky.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/spheregeom.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/spherical_coordinates.pb.h \
+  /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/statistic.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/stringmsg.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/surface.pb.h \
   /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/time.pb.h \
@@ -298,7 +307,26 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
   /opt/ros/jazzy/opt/gz_sim_vendor/include/gz/sim8/gz/sim/detail/EntityComponentManager.hh \
   /opt/ros/jazzy/opt/gz_sim_vendor/include/gz/sim8/gz/sim/detail/Export.hh \
   /opt/ros/jazzy/opt/gz_sim_vendor/include/gz/sim8/gz/sim/detail/View.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/AdvertiseOptions.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/Export.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/HandlerStorage.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/MessageInfo.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/Node.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/NodeOptions.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/NodeShared.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/Publisher.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/RepHandler.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/ReqHandler.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/SubscribeOptions.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/SubscriptionHandler.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/TopicStatistics.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/TopicStorage.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/TopicUtils.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/TransportTypes.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/Uuid.hh \
   /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/config.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/detail/Export.hh \
+  /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/detail/Node.hh \
   /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/parameters/Export.hh \
   /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/parameters/Interface.hh \
   /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/parameters/Registry.hh \
@@ -661,6 +689,7 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
   /usr/include/strings.h \
   /usr/include/time.h \
   /usr/include/tinyxml2.h \
+  /usr/include/uuid/uuid.h \
   /usr/include/wchar.h \
   /usr/include/wctype.h \
   /usr/include/x86_64-linux-gnu/asm/errno.h \
@@ -759,6 +788,7 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
   /usr/include/x86_64-linux-gnu/sys/cdefs.h \
   /usr/include/x86_64-linux-gnu/sys/select.h \
   /usr/include/x86_64-linux-gnu/sys/single_threaded.h \
+  /usr/include/x86_64-linux-gnu/sys/time.h \
   /usr/include/x86_64-linux-gnu/sys/types.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/stdarg.h \
@@ -768,8 +798,6 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h:
 
 /usr/include/x86_64-linux-gnu/sys/types.h:
 
@@ -837,8 +865,6 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
 
-/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
-
 /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h:
 
 /usr/include/x86_64-linux-gnu/bits/long-double.h:
@@ -864,6 +890,8 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 /usr/include/x86_64-linux-gnu/asm/errno.h:
 
 /usr/include/wctype.h:
+
+/usr/include/uuid/uuid.h:
 
 /usr/include/tinyxml2.h:
 
@@ -1025,7 +1053,45 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /usr/include/c++/13/iterator:
 
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/time.pb.h:
+/usr/include/c++/13/functional:
+
+/usr/include/x86_64-linux-gnu/bits/time64.h:
+
+/usr/include/c++/13/ext/type_traits.h:
+
+/usr/include/c++/13/ext/string_conversions.h:
+
+/usr/include/c++/13/ext/numeric_traits.h:
+
+/usr/include/c++/13/ext/atomicity.h:
+
+/usr/include/x86_64-linux-gnu/c++/13/bits/c++allocator.h:
+
+/usr/include/c++/13/ext/aligned_buffer.h:
+
+/usr/include/c++/13/exception:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
+
+/usr/include/c++/13/deque:
+
+/usr/include/c++/13/debug/assertions.h:
+
+/usr/include/c++/13/cwctype:
+
+/usr/include/c++/13/cwchar:
+
+/usr/include/c++/13/ctime:
+
+/usr/include/x86_64-linux-gnu/c++/13/bits/gthr.h:
+
+/usr/include/c++/13/cstring:
+
+/usr/include/limits.h:
+
+/usr/include/c++/13/cstdlib:
+
+/usr/include/c++/13/cstdint:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/serialized_map.pb.h:
 
@@ -1037,15 +1103,17 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/ellipsoidgeom.pb.h:
 
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/projector.pb.h:
+/usr/include/c++/13/future:
 
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/pointcloud_packed.pb.h:
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/scene.pb.h:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/projector.pb.h:
 
 /opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/InterfaceModel.hh:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/planegeom.pb.h:
 
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/physics.pb.h:
+/usr/include/x86_64-linux-gnu/sys/time.h:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/geometry.pb.h:
 
@@ -1058,6 +1126,10 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/model.pb.h:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/meshgeom.pb.h:
+
+/usr/include/c++/13/ext/concurrence.h:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/convert/Quaternion.hh:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/sensor_noise.pb.h:
 
@@ -1095,8 +1167,6 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/Export.hh:
 
-/usr/include/c++/13/bits/stl_raw_storage_iter.h:
-
 /opt/ros/jazzy/opt/gz_math_vendor/include/gz/math7/gz/math/Inertial.hh:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/friction.pb.h:
@@ -1111,7 +1181,13 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_common_vendor/include/gz/common5/gz/common/Filesystem.hh:
 
-/opt/ros/jazzy/opt/gz_common_vendor/include/gz/common5/gz/common/io/Export.hh:
+/usr/include/c++/13/fstream:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/light.pb.h:
+
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/TopicUtils.hh:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/MessageFactory.hh:
 
 /usr/include/google/protobuf/io/coded_stream.h:
 
@@ -1128,6 +1204,8 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 /usr/include/c++/13/bits/move.h:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/serialized.pb.h:
+
+/usr/include/c++/13/climits:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/parameter_declaration.pb.h:
 
@@ -1157,8 +1235,6 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_math_vendor/include/gz/math7/gz/math/detail/Cylinder.hh:
 
-/usr/include/c++/13/cwchar:
-
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/distortion.pb.h:
 
 /usr/include/google/protobuf/stubs/hash.h:
@@ -1169,13 +1245,17 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/spheregeom.pb.h:
 
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/parameter_declaration.pb.h:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/material.pb.h:
+
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/physics.pb.h:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/altimeter_sensor.pb.h:
 
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/parameter_declaration.pb.h:
+/opt/ros/jazzy/opt/gz_common_vendor/include/gz/common5/gz/common/io/Export.hh:
 
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/material.pb.h:
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/marker.pb.h:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/lidar_sensor.pb.h:
 
@@ -1184,6 +1264,10 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 /opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/sdf.hh:
 
 /usr/include/c++/13/bits/stl_pair.h:
+
+/usr/include/c++/13/istream:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/lens.pb.h:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/vector3d.pb.h:
 
@@ -1204,12 +1288,6 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/link.pb.h:
 
 /usr/include/c++/13/bits/charconv.h:
-
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/vector2d.pb.h:
-
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/surface.pb.h:
-
-/opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/Polyline.hh:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/image.pb.h:
 
@@ -1253,23 +1331,29 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/Actor.hh:
 
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/empty.pb.h:
+
 /opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/Altimeter.hh:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/double_v.pb.h:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/convert/ShaderType.hh:
 
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/versioned_name.pb.h:
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/projector.pb.h:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/model.pb.h:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/int32.pb.h:
+
+/usr/include/c++/13/iosfwd:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/spheregeom.pb.h:
+
+/usr/include/c++/13/bits/stl_construct.h:
 
 /opt/ros/jazzy/opt/gz_sim_vendor/include/gz/sim8/gz/sim/detail/EntityComponentManager.hh:
 
 /usr/include/c++/13/bits/unordered_map.h:
-
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/uint64.pb.h:
-
-/opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/Surface.hh:
-
-/usr/include/c++/13/bits/unique_lock.h:
 
 /usr/include/c++/13/ratio:
 
@@ -1294,6 +1378,12 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 /opt/ros/jazzy/opt/gz_common_vendor/include/gz/common5/gz/common/CSVStreams.hh:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/double.pb.h:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/physics.pb.h:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/detail/dynamic_message_cast.hh:
+
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/SubscriptionHandler.hh:
 
 /usr/include/c++/13/bits/streambuf.tcc:
 
@@ -1351,7 +1441,11 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_math_vendor/include/gz/math7/gz/math/detail/InterpolationPoint.hh:
 
-/usr/include/c++/13/bits/stl_construct.h:
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/vector2d.pb.h:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/surface.pb.h:
+
+/opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/Polyline.hh:
 
 /opt/ros/jazzy/opt/gz_math_vendor/include/gz/math7/gz/math/AxisAlignedBox.hh:
 
@@ -1390,12 +1484,6 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 /opt/ros/jazzy/opt/gz_utils_vendor/include/gz/utils2/gz/utils/NeverDestroyed.hh:
 
 /opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/Cone.hh:
-
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/projector.pb.h:
-
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/model.pb.h:
-
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/int32.pb.h:
 
 /opt/ros/jazzy/opt/gz_common_vendor/include/gz/common5/gz/common/DataFrame.hh:
 
@@ -1445,6 +1533,16 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_math_vendor/include/gz/math7/gz/math/SphericalCoordinates.hh:
 
+/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:
+
+/usr/include/math.h:
+
+/usr/include/c++/13/cstdio:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/axis_aligned_box.pb.h:
+
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/AdvertiseOptions.hh:
+
 /opt/ros/jazzy/opt/gz_common_vendor/include/gz/common5/gz/common/detail/Export.hh:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/spherical_coordinates.pb.h:
@@ -1461,8 +1559,6 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_math_vendor/include/gz/math7/gz/math/Color.hh:
 
-/usr/include/c++/13/ext/numeric_traits.h:
-
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/imu_sensor.pb.h:
 
 /opt/ros/jazzy/opt/gz_math_vendor/include/gz/math7/gz/math/Pose3.hh:
@@ -1473,8 +1569,6 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_math_vendor/include/gz/math7/gz/math/SemanticVersion.hh:
 
-/opt/ros/jazzy/opt/gz_math_vendor/include/gz/math7/gz/math/graph/Graph.hh:
-
 /opt/ros/jazzy/opt/gz_math_vendor/include/gz/math7/gz/math/Box.hh:
 
 /usr/include/google/protobuf/port_def.inc:
@@ -1483,19 +1577,25 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /usr/include/c++/13/bits/locale_facets_nonio.h:
 
+/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/statistic.pb.h:
+
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/fog.pb.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h:
+
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/Export.hh:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/Utility.hh:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/int32.pb.h:
 
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/scene.pb.h:
-
-/usr/include/c++/13/future:
-
-/opt/ros/jazzy/opt/gz_common_vendor/include/gz/common5/gz/common/Console.hh:
-
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/altimeter_sensor.pb.h:
+
+/usr/include/c++/13/iomanip:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/parameter_declarations.pb.h:
 
 /usr/include/google/protobuf/parse_context.h:
 
@@ -1508,6 +1608,20 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 /opt/ros/jazzy/opt/gz_sim_vendor/include/gz/sim8/gz/sim/components/Serialization.hh:
 
 /opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/Ellipsoid.hh:
+
+/opt/ros/jazzy/opt/gz_common_vendor/include/gz/common5/gz/common/Console.hh:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/Factory.hh:
+
+/opt/ros/jazzy/opt/gz_plugin_vendor/include/gz/plugin2/gz/plugin/detail/PluginPtr.hh:
+
+/opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/InterfaceJoint.hh:
+
+/usr/include/c++/13/bits/istream.tcc:
+
+/usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
+
+/usr/include/c++/13/bits/locale_conv.h:
 
 /opt/ros/jazzy/opt/gz_common_vendor/include/gz/common5/gz/common/URI.hh:
 
@@ -1531,11 +1645,11 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_common_vendor/include/gz/common5/gz/common/Mesh.hh:
 
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/convert/AxisAlignedBox.hh:
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/cylindergeom.pb.h:
 
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/convert/GeometryType.hh:
+/usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h:
 
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/actor.pb.h:
+/opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/Collision.hh:
 
 /opt/ros/jazzy/opt/gz_common_vendor/include/gz/common5/gz/common/graphics/detail/Export.hh:
 
@@ -1543,11 +1657,15 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/air_speed_sensor.pb.h:
 
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/cylindergeom.pb.h:
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/convert/AxisAlignedBox.hh:
 
-/usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h:
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/convert/GeometryType.hh:
 
-/opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/Collision.hh:
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/actor.pb.h:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/pointcloud_packed.pb.h:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/marker.pb.h:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/parameter_declarations.pb.h:
 
@@ -1565,17 +1683,23 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/boolean.pb.h:
 
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/statistic.pb.h:
+
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/boxgeom.pb.h:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/color.pb.h:
 
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/convert/Quaternion.hh:
-
-/usr/include/c++/13/ext/concurrence.h:
-
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/capsulegeom.pb.h:
 
 /opt/ros/jazzy/opt/gz_plugin_vendor/include/gz/plugin2/gz/plugin/detail/utility.hh:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
+
+/usr/include/c++/13/ios:
+
+/opt/ros/jazzy/opt/gz_common_vendor/include/gz/common5/gz/common/IOBase.hh:
+
+/opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/InterfaceFrame.hh:
 
 /usr/include/c++/13/backward/auto_ptr.h:
 
@@ -1601,8 +1725,6 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_math_vendor/include/gz/math7/gz/math/Quaternion.hh:
 
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/conegeom.pb.h:
-
 /usr/include/c++/13/bits/allocator.h:
 
 /usr/include/c++/13/mutex:
@@ -1616,6 +1738,8 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/plugin_v.pb.h:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/contactsensor.pb.h:
+
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/detail/Export.hh:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/convert/FuelMetadata.hh:
 
@@ -1651,6 +1775,10 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/actor.pb.h:
 
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/Node.hh:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/empty.pb.h:
+
 /opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/Plane.hh:
 
 /usr/include/x86_64-linux-gnu/bits/math-vector.h:
@@ -1675,6 +1803,8 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/heightmapgeom.pb.h:
 
+/opt/ros/jazzy/opt/gz_math_vendor/include/gz/math7/gz/math/graph/Graph.hh:
+
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/boolean.pb.h:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/int64.pb.h:
@@ -1691,10 +1821,6 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/magnetometer_sensor.pb.h:
 
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/version_range.pb.h:
-
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/boxgeom.pb.h:
-
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/material.pb.h:
 
 /usr/include/locale.h:
@@ -1706,6 +1832,20 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/capsulegeom.pb.h:
 
 /opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/Atmosphere.hh:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/time.pb.h:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/uint64.pb.h:
+
+/opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/Surface.hh:
+
+/usr/include/c++/13/bits/unique_lock.h:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/boxgeom.pb.h:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/version_range.pb.h:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/versioned_name.pb.h:
 
 /usr/include/google/protobuf/repeated_field.h:
 
@@ -1753,16 +1893,6 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_plugin_vendor/include/gz/plugin2/gz/plugin/detail/Export.hh:
 
-/opt/ros/jazzy/opt/gz_plugin_vendor/include/gz/plugin2/gz/plugin/detail/PluginPtr.hh:
-
-/opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/InterfaceJoint.hh:
-
-/usr/include/c++/13/bits/istream.tcc:
-
-/usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
-
-/usr/include/c++/13/bits/locale_conv.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
 
 /opt/ros/jazzy/opt/gz_plugin_vendor/include/gz/plugin2/gz/plugin/detail/Register.hh:
@@ -1793,17 +1923,7 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_sim_vendor/include/gz/sim8/gz/sim/components/Environment.hh:
 
-/usr/include/c++/13/ctime:
-
 /opt/ros/jazzy/opt/gz_sim_vendor/include/gz/sim8/gz/sim/components/Factory.hh:
-
-/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:
-
-/usr/include/math.h:
-
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/axis_aligned_box.pb.h:
-
-/usr/include/c++/13/cstdio:
 
 /opt/ros/jazzy/opt/gz_math_vendor/include/gz/math7/gz/math/detail/WellOrderedVector.hh:
 
@@ -1813,11 +1933,41 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/sky.pb.h:
 
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/HandlerStorage.hh:
+
 /opt/ros/jazzy/opt/gz_sim_vendor/include/gz/sim8/gz/sim/detail/BaseView.hh:
 
 /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
 
 /opt/ros/jazzy/opt/gz_sim_vendor/include/gz/sim8/gz/sim/detail/Export.hh:
+
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/NodeShared.hh:
+
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/Publisher.hh:
+
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/ReqHandler.hh:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/conegeom.pb.h:
+
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/SubscribeOptions.hh:
+
+/opt/ros/jazzy/opt/gz_plugin_vendor/include/gz/plugin2/gz/plugin/detail/Plugin.hh:
+
+/usr/include/c++/13/bits/vector.tcc:
+
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/TopicStatistics.hh:
+
+/opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/parser.hh:
+
+/usr/include/c++/13/condition_variable:
+
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/TopicStorage.hh:
+
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/TransportTypes.hh:
+
+/usr/include/c++/13/bits/stl_raw_storage_iter.h:
+
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/Uuid.hh:
 
 /opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/config.hh:
 
@@ -1853,9 +2003,7 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/gz_utils_vendor/include/gz/utils2/gz/utils/detail/ImplPtr.hh:
 
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/parameter_declarations.pb.h:
-
-/usr/include/c++/13/iomanip:
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/NodeOptions.hh:
 
 /opt/ros/jazzy/opt/gz_utils_vendor/include/gz/utils2/gz/utils/detail/SuppressWarning.hh:
 
@@ -1864,6 +2012,10 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 /opt/ros/jazzy/opt/gz_common_vendor/include/gz/common5/gz/common/Export.hh:
 
 /opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/AirSpeed.hh:
+
+/usr/include/c++/13/initializer_list:
+
+/opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/Assert.hh:
 
 /opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/Camera.hh:
 
@@ -1933,8 +2085,6 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/detail/Export.hh:
 
-/usr/include/c++/13/ext/atomicity.h:
-
 /usr/include/x86_64-linux-gnu/c++/13/bits/ctype_base.h:
 
 /opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/OutputConfig.hh:
@@ -1995,10 +2145,6 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /usr/include/c++/13/bits/stl_vector.h:
 
-/opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/parser.hh:
-
-/usr/include/c++/13/condition_variable:
-
 /usr/include/google/protobuf/map_field.h:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/PointCloudPackedUtils.hh:
@@ -2043,6 +2189,16 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /usr/include/c++/13/bits/atomic_futex.h:
 
+/usr/include/google/protobuf/wire_format_lite.h:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/gui.pb.h:
+
+/usr/include/c++/13/bits/stl_heap.h:
+
+/usr/include/c++/13/bits/atomic_lockfree_defines.h:
+
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/detail/Node.hh:
+
 /usr/include/c++/13/bits/basic_string.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:
@@ -2081,6 +2237,8 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /usr/include/c++/13/bits/functional_hash.h:
 
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/MessageInfo.hh:
+
 /usr/include/c++/13/bits/hash_bytes.h:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/sensor.pb.h:
@@ -2094,6 +2252,8 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 /usr/include/features-time64.h:
 
 /usr/include/c++/13/type_traits:
+
+/opt/ros/jazzy/opt/gz_transport_vendor/include/gz/transport13/gz/transport/RepHandler.hh:
 
 /usr/include/c++/13/bits/list.tcc:
 
@@ -2161,23 +2321,11 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /usr/include/c++/13/bits/std_thread.h:
 
-/opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/Assert.hh:
-
-/usr/include/c++/13/initializer_list:
-
 /usr/include/c++/13/bits/stl_algobase.h:
 
 /usr/include/c++/13/bits/stl_deque.h:
 
 /usr/include/c++/13/bits/stl_function.h:
-
-/usr/include/google/protobuf/wire_format_lite.h:
-
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/gui.pb.h:
-
-/usr/include/c++/13/bits/atomic_lockfree_defines.h:
-
-/usr/include/c++/13/bits/stl_heap.h:
 
 /opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/NavSat.hh:
 
@@ -2201,9 +2349,9 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /usr/include/c++/13/bits/stream_iterator.h:
 
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/vector2d.pb.h:
-
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/inertial.pb.h:
+
+/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/vector2d.pb.h:
 
 /opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/distortion.pb.h:
 
@@ -2225,72 +2373,14 @@ CMakeFiles/cable_plugin.dir/src/cable.cpp.o: /home/premmm/Projects/multi_drone_p
 
 /usr/include/c++/13/bits/utility.h:
 
-/opt/ros/jazzy/opt/gz_plugin_vendor/include/gz/plugin2/gz/plugin/detail/Plugin.hh:
-
-/usr/include/c++/13/bits/vector.tcc:
-
 /opt/ros/jazzy/opt/gz_math_vendor/include/gz/math7/gz/math/Temperature.hh:
 
 /usr/include/c++/13/bits/stringfwd.h:
 
 /usr/include/c++/13/cerrno:
 
-/usr/include/c++/13/climits:
-
 /usr/include/c++/13/cmath:
 
 /opt/ros/jazzy/opt/gz_math_vendor/include/gz/math7/gz/math/VolumetricGridLookupField.hh:
 
 /usr/include/c++/13/compare:
-
-/usr/include/c++/13/cstdint:
-
-/usr/include/limits.h:
-
-/usr/include/c++/13/cstdlib:
-
-/usr/include/x86_64-linux-gnu/c++/13/bits/gthr.h:
-
-/usr/include/c++/13/cstring:
-
-/usr/include/c++/13/cwctype:
-
-/usr/include/c++/13/debug/assertions.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
-
-/usr/include/c++/13/deque:
-
-/usr/include/c++/13/exception:
-
-/usr/include/x86_64-linux-gnu/c++/13/bits/c++allocator.h:
-
-/usr/include/c++/13/ext/aligned_buffer.h:
-
-/usr/include/c++/13/ext/string_conversions.h:
-
-/usr/include/x86_64-linux-gnu/bits/time64.h:
-
-/usr/include/c++/13/ext/type_traits.h:
-
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/light.pb.h:
-
-/usr/include/c++/13/fstream:
-
-/usr/include/c++/13/functional:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
-
-/opt/ros/jazzy/opt/gz_common_vendor/include/gz/common5/gz/common/IOBase.hh:
-
-/opt/ros/jazzy/opt/sdformat_vendor/include/gz/sdformat14/sdf/InterfaceFrame.hh:
-
-/usr/include/c++/13/ios:
-
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/spheregeom.pb.h:
-
-/usr/include/c++/13/iosfwd:
-
-/opt/ros/jazzy/opt/gz_msgs_vendor/include/gz/msgs10/gz/msgs/details/lens.pb.h:
-
-/usr/include/c++/13/istream:

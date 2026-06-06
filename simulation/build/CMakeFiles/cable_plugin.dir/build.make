@@ -130,11 +130,11 @@ libcable_plugin.so: /opt/ros/jazzy/opt/gz_common_vendor/lib/libgz-common5-graphi
 libcable_plugin.so: /opt/ros/jazzy/opt/gz_common_vendor/lib/libgz-common5.so.5.8.0
 libcable_plugin.so: /opt/ros/jazzy/opt/gz_transport_vendor/lib/libgz-transport13-parameters.so.13.5.0
 libcable_plugin.so: /opt/ros/jazzy/opt/gz_transport_vendor/lib/libgz-transport13.so.13.5.0
-libcable_plugin.so: /usr/lib/x86_64-linux-gnu/libuuid.so
-libcable_plugin.so: /usr/lib/x86_64-linux-gnu/libuuid.so
 libcable_plugin.so: /opt/ros/jazzy/opt/gz_msgs_vendor/lib/libgz-msgs10.so.10.3.2
 libcable_plugin.so: /usr/lib/x86_64-linux-gnu/libtinyxml2.so
 libcable_plugin.so: /usr/lib/x86_64-linux-gnu/libtinyxml2.so
+libcable_plugin.so: /usr/lib/x86_64-linux-gnu/libuuid.so
+libcable_plugin.so: /usr/lib/x86_64-linux-gnu/libuuid.so
 libcable_plugin.so: /opt/ros/jazzy/opt/sdformat_vendor/lib/libsdformat14.so.14.9.0
 libcable_plugin.so: /opt/ros/jazzy/opt/gz_math_vendor/lib/libgz-math7.so.7.5.2
 libcable_plugin.so: /opt/ros/jazzy/opt/gz_utils_vendor/lib/libgz-utils2.so.2.2.1
