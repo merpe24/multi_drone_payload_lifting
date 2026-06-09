@@ -70,16 +70,18 @@ class OffboardController(Node):
         self.hold_ticks = 0
 
         #Waypoint (NED)
-        self.hover_z = -2.0
+        self.hover_z = -3.5
 
         waypoints = {
-            0: (3.0, 0.0, -2.0),
-            1: (3.0, 0.0, -2.0)
+            0: (3.0, 0.0, -3.5),
+            1: (3.0, 0.0, -3.5)
         }
 
         self.waypoint = waypoints[self.instance]
+        self.companion_waypoint = waypoints[(self.instance+1)%2]
 
         # Path tracking variables
+        self.climb_progress = 0.0
         self.start_pos = (0.0, 0.0, 0.0)
         self.path_distance = 0.0
         self.path_progress = 0.0
@@ -91,7 +93,7 @@ class OffboardController(Node):
         self.offboard = False
         self.reached_hover = False
         self.reached_waypoint = False
-        self.REACH_THRESHOLD = 0.2
+        self.REACH_THRESHOLD = 0.3
         self.sent_landing_command = False
         self.landing_complete = False
         self.yaw_initialized = False
@@ -115,7 +117,7 @@ class OffboardController(Node):
 
     def companion_pos_cb(self, msg: VehicleLocalPosition):
         self.companion_pos = (msg.x, msg.y, msg.z)
-        #self.get_logger().info(f'companion_pos updated: {self.companion_pos}')
+        # self.get_logger().info(f'companion_pos: {self.companion_pos}')
 
 
     #------------------------------------------------#
@@ -126,8 +128,7 @@ class OffboardController(Node):
         self.tick += 1
         if self._distance_to(*self.waypoint) < 1.0:
             self.facing_yaw = self._compute_relative_yaw(self.pos, self.companion_pos)
-        # self.get_logger().info(f'yaw={self.facing_yaw:.3f} pos={self.pos} companion={self.companion_pos}') # Check facing_yaw
-
+            
         # Always publish ocm(offboard control mode) to keep px4 from bailing out of ocm
         self._publish_ocm()
 
@@ -140,8 +141,7 @@ class OffboardController(Node):
         # Phase 2: arm + switch to offboard once on tick 10 
         # It should switch to offboard first, then arm
         if self.tick == 40:
-            self._send_vehicle_command(
-                VehicleCommand.VEHICLE_CMD_DO_SET_MODE, 1.0, 6.0) # offboard
+            self._send_vehicle_command(VehicleCommand.VEHICLE_CMD_DO_SET_MODE, 1.0, 6.0) # offboard
 
         if not self.offboard:
             if self.nav_state == 14:
@@ -150,20 +150,29 @@ class OffboardController(Node):
             return
 
         # Phase 3: climb to hover altitude
-        if not self.reached_hover:
-            self._publish_setpoint(0.0, 0.0, self.hover_z)
+        if not self.reached_hover:    
+            companion_z = self.companion_pos[2]
+            if companion_z == 0.0: 
+                climb_z = 0.0
+            else:
+                climb_z = max(self.hover_z, companion_z - 0.3)
+            
+            self._publish_setpoint(0.0, 0.0, climb_z)
+
             if self._distance_to(0.0, 0.0, self.hover_z) < self.REACH_THRESHOLD:
-                self.reached_hover = True
+                if self.companion_pos[2] <= self.hover_z + self.REACH_THRESHOLD:
+                    self.reached_hover = True
 
-                # Initiate path tracking variables
-                self.start_pos = self.pos
-                self.path_distance = self._distance_to(*self.waypoint)
-                self.path_progress = 0.0
+                    # Initiate path tracking variables
+                    self.start_pos = self.pos
+                    self.path_distance = self._distance_to(*self.waypoint)
+                    self.path_progress = 0.0
 
-                # self.get_logger().info(f'start_pos={self.start_pos} waypoint={self.waypoint} path_distance={self.path_distance:.2f}')
-      
-                self.get_logger().info(
-                    f'Hover reached: {self.pos} - flying to waypoint')
+                    # self.get_logger().info(f'start_pos={self.start_pos} waypoint={self.waypoint} path_distance={self.path_distance:.2f}')
+        
+                    self.get_logger().info(
+                        f'Hover reached: {self.pos} - flying to waypoint')
+                return
             return
 
         # Phase 4: fly to way point
@@ -177,9 +186,10 @@ class OffboardController(Node):
             self._publish_setpoint(*self.target)
 
             if self.path_progress >= self.path_distance and self._distance_to(*self.waypoint) < self.REACH_THRESHOLD:
-                self.reached_waypoint = True
-                self.get_logger().info('Waypoint reached - holding position')
-
+                if self._distance_between(self.companion_waypoint, self.companion_pos) <= self.REACH_THRESHOLD:
+                    self.reached_waypoint = True
+                    self.get_logger().info('Waypoint reached - holding position')
+                return
             return
         
         # Phase 5: hold then land
@@ -247,6 +257,12 @@ class OffboardController(Node):
         dx = self.pos[0] - tx
         dy = self.pos[1] - ty
         dz = self.pos[2] - tz
+        return (dx**2 + dy**2 + dz**2) ** 0.5
+    
+    def _distance_between(self, point_1, point_2):
+        dx = point_2[0] - point_1[0]
+        dy = point_2[1] - point_1[1]
+        dz = point_2[2] - point_1[2]
         return (dx**2 + dy**2 + dz**2) ** 0.5
     
     def _compute_relative_yaw(self, pos, companion_pos):
