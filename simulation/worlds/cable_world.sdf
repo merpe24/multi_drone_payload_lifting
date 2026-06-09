@@ -47,7 +47,17 @@
         damping     : damping constant d (N·s/m) — higher = less oscillation
     -->
     <plugin filename="libcable_plugin.so" name="CablePlugin">
-      <rest_length>2.05</rest_length>
+      <model0>x500_0</model0>
+      <model1>payload</model1>
+      <rest_length>2.5</rest_length>
+      <stiffness>150.0</stiffness>
+      <damping>20.0</damping>
+    </plugin>
+
+    <plugin filename="libcable_plugin.so" name="CablePlugin">
+      <model0>x500_1</model0>
+      <model1>payload</model1>
+      <rest_length>2.5</rest_length>
       <stiffness>150.0</stiffness>
       <damping>20.0</damping>
     </plugin>
@@ -78,6 +88,32 @@
       </link>
     </model>
 
+    <!-- ========== Payload ==========-->
+    <model name="payload">
+      <pose>1 0 0.1 0 0 0</pose>
+      <!-- <static>true</static> -->
+      <link name="base_link">
+        <inertial>
+          <mass>1.0</mass> <!-- Weight of the payload -->
+        </inertial>
+
+        <collision name="collision">
+          <geometry>
+            <box><size>0.2 0.2 0.2</size></box>
+          </geometry>
+        </collision>
+
+        <visual name="visual">
+          <geometry>
+            <box><size>0.2 0.2 0.2</size></box>
+          </geometry>
+          <material>
+            <ambient>0.2 0.5 1.0 1</ambient>
+            <diffuse>0.2 0.5 1.0 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
   </world>
 </sdf>
 
