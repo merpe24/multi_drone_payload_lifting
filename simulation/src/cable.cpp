@@ -17,6 +17,7 @@
 #include <gz/msgs/marker.pb.h>
 #include <gz/math/Quaternion.hh>
 #include <gz/msgs/pose.pb.h>
+#include <gz/msgs/boolean.pb.h>
 
 #include <iostream>
 #include <optional>
@@ -38,11 +39,18 @@ public:
     rest_length_ = sdf->Get<double>("rest_length", 2.2).first;
     stiffness_   = sdf->Get<double>("stiffness",   50.0).first;
     damping_     = sdf->Get<double>("damping",     30.0).first;
+    model0_name_ = sdf->Get<std::string>("model0", "x500_0").first;
+    model1_name_ = sdf->Get<std::string>("model1", "x500_1").first;
 
     std::cout << "[CablePlugin] Loaded."
               << " rest_length=" << rest_length_
               << " k=" << stiffness_
-              << " d=" << damping_ << std::endl;
+              << " d=" << damping_
+              << " model0=" << model0_name_
+              << " model1=" << model1_name_ << std::endl;
+
+    transport_node_.Subscribe("/cable/activate",
+        &CablePlugin::OnActivate, this);
   }
 
   void Update(const UpdateInfo &/*info*/,
@@ -51,20 +59,27 @@ public:
     // --- Find drone links on first tick (deferred until both are spawned) ---
     if (!links_found_)
     {
-      link0_ = FindCanonicalLink(ecm, "x500_0");
-      link1_ = FindCanonicalLink(ecm, "x500_1");
+      link0_ = FindCanonicalLink(ecm, model0_name_);
+      link1_ = FindCanonicalLink(ecm, model1_name_);
 
       if (link0_ == kNullEntity || link1_ == kNullEntity)
         return;
 
-      // Enable velocity tracking
       gz::sim::Link l0(link0_);
       gz::sim::Link l1(link1_);
       l0.EnableVelocityChecks(ecm, true);
       l1.EnableVelocityChecks(ecm, true);
 
       links_found_ = true;
-      std::cout << "[CablePlugin] Both drone links found. Cable active." << std::endl;
+      std::cout << "[CablePlugin] Both links found. Waiting for activation." << std::endl;
+    }
+
+    // --- Cable inactive — zero force and return ---
+    if (!active_)
+    {
+      ApplyForce(ecm, link0_, math::Vector3d::Zero);
+      ApplyForce(ecm, link1_, math::Vector3d::Zero);
+      return;
     }
 
     // --- Read poses via Link helper ---
@@ -119,59 +134,62 @@ private:
   Entity link0_ = kNullEntity;
   Entity link1_ = kNullEntity;
   bool links_found_ = false;
+  bool active_ = false;
   gz::transport::Node transport_node_;
 
   double rest_length_ = 2.0;
   double stiffness_   = 150.0;
   double damping_     = 20.0;
 
+  std::string model0_name_;
+  std::string model1_name_;
+
   // ---------------------------------------------------
-  // Visual: draw a red line between the two drone links
+  // Activate cable via gz-transport message
+  // ---------------------------------------------------
+  void OnActivate(const gz::msgs::Boolean &msg)
+  {
+    active_ = msg.data();
+    std::cout << "[CablePlugin] Cable " << model0_name_ << " active=" << active_ << std::endl;
+  }
+
+  // ---------------------------------------------------
+  // Visual: draw a yellow cylinder between the two links
   // ---------------------------------------------------
   void UpdateCableMarker(const math::Vector3d &p0, const math::Vector3d &p1)
-{
-  gz::msgs::Marker marker;
-  marker.set_ns("cable");
-  marker.set_id(1);
-  marker.set_action(gz::msgs::Marker::ADD_MODIFY);
-  marker.set_type(gz::msgs::Marker::CYLINDER);
+  {
+    gz::msgs::Marker marker;
+    marker.set_ns(model0_name_);
+    marker.set_id(1);
+    marker.set_action(gz::msgs::Marker::ADD_MODIFY);
+    marker.set_type(gz::msgs::Marker::CYLINDER);
 
-  marker.mutable_lifetime()->set_sec(0);
-  marker.mutable_lifetime()->set_nsec(100000000);
+    marker.mutable_lifetime()->set_sec(0);
+    marker.mutable_lifetime()->set_nsec(100000000);
 
-  // Midpoint position
-  math::Vector3d mid = (p0 + p1) / 2.0;
+    math::Vector3d mid = (p0 + p1) / 2.0;
+    double length = (p1 - p0).Length();
 
-  // Length of cable
-  double length = (p1 - p0).Length();
+    math::Vector3d dir = (p1 - p0).Normalized();
+    math::Vector3d z_axis(0, 0, 1);
+    math::Quaterniond rot;
+    rot.From2Axes(z_axis, dir);
 
-  // Orientation: cylinder Z-axis must align with cable direction
-  math::Vector3d dir = (p1 - p0).Normalized();
-  math::Vector3d z_axis(0, 0, 1);
-  math::Quaterniond rot;
-  rot.From2Axes(z_axis, dir);
+    gz::msgs::Set(marker.mutable_pose(), math::Pose3d(mid, rot));
+    gz::msgs::Set(marker.mutable_scale(), math::Vector3d(0.02, 0.02, length));
 
-  // Set pose (position + orientation)
-  gz::msgs::Set(marker.mutable_pose(),
-    math::Pose3d(mid, rot));
+    auto *mat = marker.mutable_material();
+    mat->mutable_ambient()->set_r(1.0);
+    mat->mutable_ambient()->set_g(0.8);
+    mat->mutable_ambient()->set_b(0.0);
+    mat->mutable_ambient()->set_a(1.0);
+    mat->mutable_diffuse()->set_r(1.0);
+    mat->mutable_diffuse()->set_g(0.8);
+    mat->mutable_diffuse()->set_b(0.0);
+    mat->mutable_diffuse()->set_a(1.0);
 
-  // Set scale: x/y = diameter, z = length
-  gz::msgs::Set(marker.mutable_scale(),
-    math::Vector3d(0.02, 0.02, length));  // 2cm diameter
-
-  // Yellow cable
-  auto *mat = marker.mutable_material();
-  mat->mutable_ambient()->set_r(1.0);
-  mat->mutable_ambient()->set_g(0.8);
-  mat->mutable_ambient()->set_b(0.0);
-  mat->mutable_ambient()->set_a(1.0);
-  mat->mutable_diffuse()->set_r(1.0);
-  mat->mutable_diffuse()->set_g(0.8);
-  mat->mutable_diffuse()->set_b(0.0);
-  mat->mutable_diffuse()->set_a(1.0);
-
-  transport_node_.Request("/marker", marker);
-}
+    transport_node_.Request("/marker", marker);
+  }
 
   // ---------------------------------------------------
   // Find the canonical (base) link of a named model
