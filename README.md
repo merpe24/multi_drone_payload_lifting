@@ -1,194 +1,176 @@
-# Multi-Drone Payload Lifting
-Two autonomous quadcopters that coordinate to fly in formation and lift a payload
-using UWB relative localisation and ROS 2 offboard control.
+# Multi-Drone Cooperative Payload Lifting
 
-**Stack:** ROS 2 Jazzy · PX4 v1.18 · Gazebo · Ubuntu 24.04  
-**Status:** 🟡 In development — simulation working, hardware pending
+Two Holybro X500 quadcopters that cooperatively lift a shared payload using UWB relative localization, a custom Gazebo cable plugin, and ROS 2 offboard control.
 
 ---
 
-## Repo Structure
+## Hardware
+
+| Item | Choice |
+|---|---|
+| Frame | Holybro X500 v2 ×2 |
+| Flight Controller | Holybro Pixhawk 6C ×2 |
+| Companion Computer | Raspberry Pi 4 (4GB) ×2 |
+| Relative Localization | Nooploop LinkTrack P UWB ×4 |
+| Battery | 4S 5000mAh 30C ×8 |
+| Payload Release | SG90/MG90S servo ×2 + Dyneema 50kg cord + steel hooks |
+
+---
+
+## Software Stack
+
+```
+Gazebo (standalone)
+    ↕ PX4 SITL / Pixhawk 6C
+    ↕ uXRCE-DDS bridge
+    ↕ ROS 2 Jazzy (Ubuntu 24.04)
+    ↕ Python offboard control nodes
+```
+
+**Key dependencies:**
+- ROS 2 Jazzy with `rmw_cyclonedds_cpp` (FastDDS breaks multi-drone namespacing)
+- PX4-Autopilot built from source at `~/src/PX4-Autopilot`
+- empy pinned to 3.3.4
+- Custom Gazebo cable physics plugin (`simulation/src/cable.cpp`)
+
+---
+
+## Repository Structure
+
 ```
 multi_drone_payload_lifting/
-├── ros2_ws/        # ROS 2 nodes (offboard control, UWB driver, facing algorithm)
-├── simulation/     # Gazebo worlds, cable plugin, CMakeLists
-├── hardware/       # Wiring diagrams, CAD files, BOM
-└── docs/           # Calculations, meeting notes, report drafts
+├── ros2_ws/
+│   └── src/
+│       ├── offboard_control.py       # Main state machine for each drone
+│       └── launch_formation.sh       # Launches both drone controllers
+├── simulation/
+│   ├── src/
+│   │   └── cable.cpp                 # Gazebo cable spring-damper plugin
+│   ├── build/
+│   │   └── libcable_plugin.so        # Compiled plugin (copy to Gazebo path)
+│   └── worlds/
+│       └── cable_world.sdf           # World file — copy to ~/.simulation-gazebo/worlds/
+└── drone_handoff.md                  # Full session notes and technical reference
 ```
 
 ---
 
-## Prerequisites
-Install the following before cloning this repo:
-- [ROS 2 Jazzy](https://docs.ros.org/en/jazzy/Installation.html)
-- [PX4 Autopilot](https://docs.px4.io/main/en/dev_setup/dev_env_linux_ubuntu.html)
-- [Micro XRCE-DDS Agent](https://micro-xrce-dds.docs.eprosima.com/en/latest/installation.html)
-- [px4_msgs](https://github.com/PX4/px4_msgs) — build with colcon in your workspace
+## Simulation Setup
 
-> ⚠️ Use `rmw_cyclonedds_cpp`, not FastDDS. FastDDS does not work with this setup.  
-> ⚠️ Pin `empy` to 3.3.4 — newer versions break ROS 2 builds.
-
----
-
-## Environment Setup
-
-| Tool | Version |
-|------|---------|
-| OS | Ubuntu 24.04 LTS |
-| ROS 2 | Jazzy |
-| PX4 | v1.18 (built from source) |
-| Gazebo | Standalone (gz-garden) |
-| RMW | CycloneDDS (`rmw_cyclonedds_cpp`) |
-
-**Required env vars in `~/.bashrc`:**
+### 1. Build the cable plugin
 ```bash
-export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-export ROS_DOMAIN_ID=0
-export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:$HOME/Projects/multi_drone_payload_lifting/simulation/worlds
-export GZ_SIM_SYSTEM_PLUGIN_PATH=$GZ_SIM_SYSTEM_PLUGIN_PATH:$HOME/src/PX4-Autopilot/build/px4_sitl_default/src/modules/simulation/gz_plugins
-export GZ_SIM_SYSTEM_PLUGIN_PATH=$GZ_SIM_SYSTEM_PLUGIN_PATH:$HOME/Projects/multi_drone_payload_lifting/simulation/build
-```
-
----
-
-## Building the Cable Plugin
-
-```bash
-cd ~/Projects/multi_drone_payload_lifting/simulation
-mkdir -p build && cd build
+cd simulation/build
 cmake .. && make
 ```
-Output: `simulation/build/libcable_plugin.so`
 
-After editing `cable_world.sdf`, always deploy it:
+### 2. Copy world file
 ```bash
-cp ~/Projects/multi_drone_payload_lifting/simulation/worlds/cable_world.sdf ~/.simulation-gazebo/worlds/
+cp simulation/worlds/cable_world.sdf ~/.simulation-gazebo/worlds/
 ```
 
----
+### 3. Launch (7 terminals in order)
 
-## Running the Simulation
-
-Open 7 terminals in this exact order:
-
-**Terminal 1 — uXRCE-DDS bridge**
 ```bash
+# T1 — DDS bridge
 MicroXRCEAgent udp4 -p 8888
-```
 
-**Terminal 2 — QGroundControl** (optional, for monitoring)
-```bash
-./QGroundControl.AppImage
-```
+# T2 — Ground station (optional)
+QGroundControl
 
-**Terminal 3 — Gazebo world**
-```bash
-python3 ~/src/PX4-gazebo-models/simulation-gazebo --world cable_world
-```
+# T3 — Gazebo
+python3 ~/src/PX4-gazebo-models/simulation-gazebo --world=cable_world
 
-**Terminal 4 — PX4 SITL (drone 0)**
-```bash
+# T4 — Drone 0
 cd ~/src/PX4-Autopilot
-PX4_GZ_STANDALONE=1 PX4_GZ_WORLD=cable_world make px4_sitl gz_x500
-```
+PX4_GZ_STANDALONE=1 PX4_GZ_MODEL_POSE="0,0,0,0,0,1.57" PX4_GZ_WORLD=cable_world make px4_sitl gz_x500
 
-**Terminal 5 — PX4 SITL (drone 1)**
-```bash
-cd ~/src/PX4-Autopilot
-PX4_GZ_STANDALONE=1 \
-PX4_GZ_WORLD=cable_world \
-PX4_SYS_AUTOSTART=4001 \
-PX4_GZ_MODEL_POSE="2,0,0,0,0,0" \
-PX4_INSTANCE=1 \
+# T5 — Drone 1
+PX4_GZ_STANDALONE=1 PX4_GZ_WORLD=cable_world PX4_SYS_AUTOSTART=4001 \
+PX4_GZ_MODEL_POSE="2,0,0,0,0,1.57" PX4_INSTANCE=1 \
 ./build/px4_sitl_default/bin/px4 -i 1
-```
 
-**Terminals 6 & 7 — ROS 2 nodes**
-```bash
+# T6+7 — Wait for "Ready for takeoff!" in both PX4 terminals first
 cd ~/Projects/multi_drone_payload_lifting/ros2_ws/src
 ./launch_formation.sh
 ```
 
-> ⚠️ Wait for `INFO [commander] Ready for takeoff!` in **both** PX4 terminals before launching nodes.  
-> ⚠️ Kill all Python nodes with Ctrl+C before relaunching — stale nodes corrupt the setpoint stream.  
-> ⚠️ Always use `--spin-time 5` with `ros2 topic list` or topics won't appear.
+> **Important:** Always wait for `Ready for takeoff!` in both T4 and T5 before running T6+7.
 
 ---
 
-## Running the Nodes
+## Coordinate Frames
 
-```bash
-cd ~/Projects/multi_drone_payload_lifting/ros2_ws/src
+| Frame | X | Y | Z |
+|---|---|---|---|
+| Gazebo world | sideways | forward | up |
+| PX4 / Python NED | forward | sideways | down (negative = up) |
 
-# Listen to drone position (optional debug)
-python3 drone_listener.py
-
-# Formation offboard control — launches both drones simultaneously
-./launch_formation.sh
-
-# Or launch individually:
-python3 offboard_control.py 2>&1 | tee drone1_log.txt                            # drone 0
-python3 offboard_control.py --ros-args -r __ns:=/px4_1 2>&1 | tee drone2_log.txt # drone 1
-```
-
-**To filter logs after flight:**
-```bash
-cat drone1_log.txt | grep "keyword"
-```
+- Drone 0 spawns at Gazebo `(0, 0, 0)` = NED origin
+- Drone 1 spawns at Gazebo `(2, 0, 0)` = NED `(0, 2, 0)`
+- Payload spawns at Gazebo `(1, 0, 0.1)` — midpoint between drones
 
 ---
 
-## What the Simulation Does
+## State Machine
 
-1. Both drones spawn 2m apart along world X axis, wait for EKF to settle
-2. Both arm and climb to 2m altitude
-3. Both fly forward to local `(3, 0, -2)` NED via lerp-based trajectory
-   - Drone 0: world `(0,0,0)` → world `(3, 0, -2)`
-   - Drone 1: world `(2,0,0)` → world `(5, 0, -2)`
-   - World separation at destination: **2.0m along X** — cable stays slack
-4. Hold formation for 5 seconds, then land
-5. A yellow cylinder renders in Gazebo showing the cable between drones
+```
+PREFLIGHT → ARMING → OFFBOARD → HOVER → WAYPOINT → HOLD → LAND → DISARMED
+```
 
-**Formation geometry note:** Waypoints are in each drone's local NED frame. Both drones use the same local waypoint `(3, 0, -2)` but end up 2m apart in world frame due to their spawn offset. Cable rest length is 2.05m — just enough slack at the destination.
+| Phase | Ticks | Action |
+|---|---|---|
+| Pre-stream | 0–39 | Publish setpoints at current position to satisfy PX4 offboard requirement |
+| Arm | 40 | Switch to offboard mode + arm |
+| Climb | — | Both drones climb to `hover_z = -3.5` (NED), cables engage at ~3m |
+| Waypoint | — | Lerp to target, wait for both drones to arrive |
+| Hold | — | Hold 5s then land |
 
 ---
 
-## Cable Plugin
+## Payload Lift Design
 
-Spring-damper cable connecting the two drones. Force only applied when cable is taut (stretched beyond rest length).
+Cables attach to tip links at each end of a log-shaped payload rather than both attaching to the center. This eliminates the asymmetric force feedback loop that caused payload drift in the V-shape configuration.
 
-**Parameters (in `cable_world.sdf`):**
-```xml
-<rest_length>2.05</rest_length>   <!-- cable length at which tension starts (m) -->
-<stiffness>150.0</stiffness>      <!-- spring constant k (N/m) -->
-<damping>20.0</damping>           <!-- damping d (N·s/m) -->
+```
+Drone 0          Drone 1
+   |                |
+   | cable          | cable
+   |                |
+[tip_0]----base----[tip_1]
+  (-1,0)   (0,0)   (1,0)   ← relative to payload centre
 ```
 
-**Visual:** Yellow 3D cylinder, 2cm diameter, updates every physics tick via Gazebo marker API.
+Each cable runs vertically to its own drone, so any altitude difference between drones causes a much smaller and self-correcting horizontal force rather than a runaway imbalance.
+
+**Cable plugin SDF params:** `rest_length=3.1m`, `stiffness=50 N/m`, `damping=20 N·s/m`
+
+---
+
+## Current Status
+
+| Milestone | Status |
+|---|---|
+| Offboard control state machine | ✅ Complete |
+| Multi-drone simulation | ✅ Complete |
+| Drone-to-drone facing | ✅ Complete |
+| Formation flying | ✅ Complete |
+| Cable plugin (physics + visual + gz-transport) | ✅ Complete |
+| Cooperative payload lift | 🟡 Working — minor tuning in progress |
+| UWB driver integration | ⬜ Not started |
+| Hardware assembly | ⬜ Not started |
+| Port to real drones | ⬜ Not started |
+
+### Known Tuning Items
+- **Initial climb wobble (~0.8m):** Tip link collision boxes interact with drone landing gear at spawn. Fix: reduce box thickness to `0.05 × 0.05 × 0.001`.
+- **Waypoint swing:** Payload pendulums at waypoint arrival. Fix: increase cable `damping` to 40, or reduce waypoint lerp speed in `offboard_control.py`.
 
 ---
 
 ## Team
 
 | Person | Role |
-|--------|------|
+|---|---|
 | A | Flight software — offboard control, PID tuning |
-| B | Tracking — UWB localisation, drone-facing algorithm |
-| C | Hardware — frame assembly, thrust calculations, payload bracket |
-| D | Systems — RPi setup, ROS 2 on hardware, MAVLink |
-
----
-
-## Current Progress
-
-- [x] Simulation environment working
-- [x] Single drone offboard control (arm → hover → waypoint → hold → land → disarm)
-- [x] Multi-drone simulation
-- [x] Drone-to-drone facing algorithm (P controller, angle unwrapping, deadband)
-- [x] Formation flying (lerp-based trajectory, stable hold)
-- [x] Cable plugin — physics (spring-damper, slack detection, no tilt)
-- [x] Cable plugin — visual (yellow cylinder via Gazebo marker API)
-- [ ] Payload attachment in Gazebo (hook + Dyneema model)
-- [ ] UWB driver
-- [ ] Hardware assembly
-- [ ] Port to real drones
+| B | Tracking — UWB, facing algorithm |
+| C | Hardware — frame, thrust calc, payload bracket |
+| D | Systems — RPi, ROS 2 on hardware, MAVLink |
