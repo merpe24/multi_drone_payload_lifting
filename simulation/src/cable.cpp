@@ -41,6 +41,8 @@ public:
     damping_     = sdf->Get<double>("damping",     30.0).first;
     model0_name_ = sdf->Get<std::string>("model0", "x500_0").first;
     model1_name_ = sdf->Get<std::string>("model1", "x500_1").first;
+    link0_name_ = sdf->Get<std::string>("link0", "tip0_link").first;
+    link1_name_ = sdf->Get<std::string>("link1", "tip1_link").first;
 
     std::cout << "[CablePlugin] Loaded."
               << " rest_length=" << rest_length_
@@ -59,8 +61,8 @@ public:
     // --- Find drone links on first tick (deferred until both are spawned) ---
     if (!links_found_)
     {
-      link0_ = FindCanonicalLink(ecm, model0_name_);
-      link1_ = FindCanonicalLink(ecm, model1_name_);
+      link0_ = FindCanonicalLink(ecm, model0_name_, link0_name_);
+      link1_ = FindCanonicalLink(ecm, model1_name_, link1_name_);
 
       if (link0_ == kNullEntity || link1_ == kNullEntity)
         return;
@@ -134,7 +136,7 @@ private:
   Entity link0_ = kNullEntity;
   Entity link1_ = kNullEntity;
   bool links_found_ = false;
-  bool active_ = false;
+  bool active_ = true;
   gz::transport::Node transport_node_;
 
   double rest_length_ = 2.0;
@@ -143,6 +145,8 @@ private:
 
   std::string model0_name_;
   std::string model1_name_;
+  std::string link0_name_;
+  std::string link1_name_;
 
   // ---------------------------------------------------
   // Activate cable via gz-transport message
@@ -195,7 +199,8 @@ private:
   // Find the canonical (base) link of a named model
   // ---------------------------------------------------
   Entity FindCanonicalLink(EntityComponentManager &ecm,
-                           const std::string &model_name)
+                           const std::string &model_name,
+                          const std::string &link_name)
   {
     Entity model_entity = kNullEntity;
 
@@ -216,7 +221,7 @@ private:
       return kNullEntity;
 
     gz::sim::Model model(model_entity);
-    return model.CanonicalLink(ecm);
+    return model.LinkByName(ecm, link_name);
   }
 
   // ---------------------------------------------------
