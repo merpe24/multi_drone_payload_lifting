@@ -9,6 +9,7 @@ from px4_msgs.msg import (
     VehicleStatus,
     VehicleLocalPosition,
 )
+import subprocess
 
 class OffboardController(Node):
     """
@@ -152,7 +153,7 @@ class OffboardController(Node):
         # Phase 3: climb to hover altitude
         if not self.reached_hover:    
             companion_z = self.companion_pos[2]
-            if companion_z == 0.0: 
+            if companion_z == 0.0:  
                 climb_z = 0.0
             else:
                 climb_z = max(self.hover_z, companion_z - 0.3)
@@ -177,6 +178,7 @@ class OffboardController(Node):
 
         # Phase 4: fly to way point
         if not self.reached_waypoint:
+            self.get_logger().info(f'self.pos: {self.pos}')
             # self.get_logger().info(f'companion_dist={self._distance_to(*self.companion_pos):.2f}')
             self.path_progress += self.desired_speed * self.dt
             if self.path_progress >= self.path_distance:
