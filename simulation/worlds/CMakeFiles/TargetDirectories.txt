@@ -1,0 +1,3 @@
+/home/premmm/Projects/multi_drone_payload_lifting/simulation/worlds/CMakeFiles/cable_plugin.dir
+/home/premmm/Projects/multi_drone_payload_lifting/simulation/worlds/CMakeFiles/edit_cache.dir
+/home/premmm/Projects/multi_drone_payload_lifting/simulation/worlds/CMakeFiles/rebuild_cache.dir
