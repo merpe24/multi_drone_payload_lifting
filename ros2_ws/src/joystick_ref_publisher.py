@@ -32,14 +32,14 @@ DEADZONE  = 0.1
 # Axis mapping (verify against `ros2 topic echo /joy` for your RadioMaster)
 AXIS_X = 1          # right stick up/down  -> payload X (forward/back)
 AXIS_Y = 0          # right stick left/right -> payload Y (sideways)
-AXIS_Z = 3          # left stick up/down   -> payload Z (up/down)
+AXIS_Z = 2          # left stick up/down   -> payload Z (up/down)
 
 # Sign per axis
 # NED Z is positive DOWN
 # Flip any of these to +1/-1 once stick directions confirmed
-SIGN_X = 1.0
-SIGN_Y = 1.0
-SIGN_Z = -1.0
+SIGN_X = -1.0
+SIGN_Y = -1.0
+SIGN_Z = 1.0
 
 
 class JoystickRefPublisher(Node):
