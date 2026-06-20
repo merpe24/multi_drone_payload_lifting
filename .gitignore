@@ -20,8 +20,15 @@ ros2_ws/src/CMakeLists.txt
 # Ignore log files and temporary simulation data
 *.log
 *.ulg
-simulation/.build/
+*_log.txt
+simulation/build/
 ros2_ws/src/px4_msgs/
+
+# CMake in-source build artifacts (keep .sdf/.cpp, drop generated junk)
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
 
 # ------------------------------------------
 # Python & C++ Caches
