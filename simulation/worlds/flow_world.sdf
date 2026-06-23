@@ -58,5 +58,11 @@
       <pose>0 0 0 0 0 0</pose>
     </include>
 
+    <!-- ========== AprilTags ==========-->
+    <include>
+        <uri>model://apriltag_tags</uri>
+        <pose>0 0 0 0 0 0</pose>
+    </include>
+    
   </world>
 </sdf>
