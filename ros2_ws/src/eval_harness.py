@@ -33,6 +33,7 @@ class EvalHarness(Node):
         )
 
         # --- estimate (PX4 NED) ---
+        # self.create_subscription(msg_type, topic, cb, qos)
         self.create_subscription(
             VehicleLocalPosition, 'fmu/out/vehicle_local_position_v1',
             self.ekf2_cb, px4_qos)
@@ -73,7 +74,7 @@ class EvalHarness(Node):
         u -= self.ekf2_origin[2]
         self.ekf2_enu = (e, n, u)
         self._append(self.ekf2_path, self.ekf2_path_pub, e, n, u)
-        self._send_tf('ekf2_est', e, n, u)
+        self._send_tf('ekf2_est', e, n, u) 
 
     def truth_cb(self, msg: Odometry):
         p = msg.pose.pose.position          # gz odometry already ENU

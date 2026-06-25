@@ -62,9 +62,15 @@ class FlowHoverTest(Node):
         self.hover_z = -3.5          # NED, negative = up
         self.REACH_THRESHOLD = 0.3
         self.offboard = False
+        self.mode_requested = False
         self.reached_hover = False
         self.reached_waypoint = False
         self.REACH_THRESHOLD = 0.3
+
+        # EKF2 readiness flags (gate arming on these, not a fixed tick)
+        self.xy_valid = False
+        self.z_valid = False
+        self.heading_ok = False
 
         self.create_timer(0.05, self.timer_cb)   # 20 Hz
         self.get_logger().info('Flow hover test ready.')
@@ -75,6 +81,19 @@ class FlowHoverTest(Node):
 
     def position_cb(self, msg: VehicleLocalPosition):
         self.pos = (msg.x, msg.y, msg.z)
+        self.xy_valid = msg.xy_valid
+        self.z_valid = msg.z_valid
+        self.heading_ok = msg.heading_good_for_control
+
+    def _est_ready(self):
+        """EKF2 flight-ready: valid horizontal + vertical position estimate.
+
+        NOTE: heading_good_for_control is intentionally NOT required. In this
+        GPS-off / flow-only config yaw is mag-derived and PX4 won't mark heading
+        'good for control' until the vehicle has moved -> can't satisfy it before
+        takeoff (deadlock). Position validity is the flag that actually prevents
+        arming into an unconverged estimate (the runaway-climb cause)."""
+        return self.xy_valid and self.z_valid
 
     def timer_cb(self):
         self.tick += 1
@@ -87,12 +106,22 @@ class FlowHoverTest(Node):
             self._publish_setpoint(self.pos[0], self.pos[1], self.pos[2])
             return
 
-        # Phase 2: request OFFBOARD, then arm once it's accepted
-        if self.tick == 40:
-            self._send_vehicle_command(VehicleCommand.VEHICLE_CMD_DO_SET_MODE, 1.0, 6.0)
-
+        # Phase 2: wait for EKF2 to be flight-ready, THEN request OFFBOARD + arm.
+        # Arming on a fixed tick (before the estimator settles) lets the
+        # heading/position estimate diverge during climb -> runaway climb and
+        # sideways wander. Gate on the EKF2 validity flags instead.
         if not self.offboard:
             self._publish_setpoint(0.0, 0.0, self.pos[2])
+            if not self._est_ready():
+                if self.tick % 20 == 0:
+                    self.get_logger().info(
+                        f'waiting for EKF2: xy_valid={self.xy_valid} '
+                        f'z_valid={self.z_valid} heading_ok={self.heading_ok}')
+                return
+            if not self.mode_requested:
+                self._send_vehicle_command(
+                    VehicleCommand.VEHICLE_CMD_DO_SET_MODE, 1.0, 6.0)
+                self.mode_requested = True
             if self.nav_state == 14:  # OFFBOARD
                 self._arm()
                 self.offboard = True
@@ -103,7 +132,6 @@ class FlowHoverTest(Node):
             self._publish_setpoint(0.0, 0.0, self.hover_z)
             if self._distance_to(0.0, 0.0, self.hover_z) < self.REACH_THRESHOLD:
                 self.reached_hover = True
-
                 # Initiate path tracking variables
                 self.start_pos = self.pos
                 self.path_distance = self._distance_to(*self.waypoint)
@@ -112,22 +140,22 @@ class FlowHoverTest(Node):
                 self.get_logger().info(f'Hover reached: {self.pos} - holding')
             return
 
-        # Phase 4: go to waypoint
-        if not self.reached_waypoint:
-            self.path_progress += self.desired_speed * self.dt
-            if self.path_progress >= self.path_distance:
-                self.path_progress = self.path_distance
+        # # Phase 4: go to waypoint
+        # if not self.reached_waypoint:
+        #     self.path_progress += self.desired_speed * self.dt
+        #     if self.path_progress >= self.path_distance:
+        #         self.path_progress = self.path_distance
 
-            self.target = self._compute_lerp(self.path_progress, self.path_distance, self.start_pos, self.waypoint)
-            self._publish_setpoint(*self.target)
+        #     self.target = self._compute_lerp(self.path_progress, self.path_distance, self.start_pos, self.waypoint)
+        #     self._publish_setpoint(*self.target)
 
-            if self.path_progress >= self.path_distance and self._distance_to(*self.waypoint) < self.REACH_THRESHOLD:
-                self.reached_waypoint = True
-                self.get_logger().info('Waypoint reached - holding position')
-            return
+        #     if self.path_progress >= self.path_distance and self._distance_to(*self.waypoint) < self.REACH_THRESHOLD:
+        #         self.reached_waypoint = True
+        #         self.get_logger().info('Waypoint reached - holding position')
+        #     return
         
         # Phase 5: hold at waypoint
-        self._publish_setpoint(*self.pos)
+        self._publish_setpoint(0.0, 0.0, self.hover_z)
 
     def _publish_ocm(self):
         msg = OffboardControlMode()
