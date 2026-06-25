@@ -1,0 +1,15 @@
+/**:
+  ros__parameters:
+    image_transport: raw
+    family: 36h11
+    size: 0.4            # tag edge length (m) (0.5m size IRL, but scale down to 0.4 for simulation quirks)
+    max_hamming: 0
+    detector:
+      threads: 2
+      decimate: 1.0      # full res; tags are small from 3.5 m
+      blur: 0.0
+      refine: true
+    tag:
+      ids: [0, 1, 2]
+      frames: [tag0, tag1, tag2]
+      sizes: [0.4, 0.4, 0.4]
