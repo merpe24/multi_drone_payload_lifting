@@ -22,7 +22,11 @@ class FlowHoverTest(Node):
     def __init__(self):
         super().__init__('flow_hover_test')
 
-        self.instance = 0  # solo, default namespace
+        # Drone instance: 0 (default ns) or 1 (px4_1). Sets VehicleCommand
+        # target_system = instance + 1, so drone 1 must run with -p instance:=1
+        # or its arm/mode commands hit drone 0 (target_system 1).
+        self.declare_parameter('instance', 0)
+        self.instance = self.get_parameter('instance').value
 
         px4_qos = QoSProfile(
             reliability=ReliabilityPolicy.BEST_EFFORT,
@@ -140,22 +144,22 @@ class FlowHoverTest(Node):
                 self.get_logger().info(f'Hover reached: {self.pos} - holding')
             return
 
-        # # Phase 4: go to waypoint
-        # if not self.reached_waypoint:
-        #     self.path_progress += self.desired_speed * self.dt
-        #     if self.path_progress >= self.path_distance:
-        #         self.path_progress = self.path_distance
+        # Phase 4: go to waypoint
+        if not self.reached_waypoint:
+            self.path_progress += self.desired_speed * self.dt
+            if self.path_progress >= self.path_distance:
+                self.path_progress = self.path_distance
 
-        #     self.target = self._compute_lerp(self.path_progress, self.path_distance, self.start_pos, self.waypoint)
-        #     self._publish_setpoint(*self.target)
+            self.target = self._compute_lerp(self.path_progress, self.path_distance, self.start_pos, self.waypoint)
+            self._publish_setpoint(*self.target)
 
-        #     if self.path_progress >= self.path_distance and self._distance_to(*self.waypoint) < self.REACH_THRESHOLD:
-        #         self.reached_waypoint = True
-        #         self.get_logger().info('Waypoint reached - holding position')
-        #     return
-        
+            if self.path_progress >= self.path_distance and self._distance_to(*self.waypoint) < self.REACH_THRESHOLD:
+                self.reached_waypoint = True
+                self.get_logger().info('Waypoint reached - holding position')
+            return
+
         # Phase 5: hold at waypoint
-        self._publish_setpoint(0.0, 0.0, self.hover_z)
+        self._publish_setpoint(*self.waypoint)
 
     def _publish_ocm(self):
         msg = OffboardControlMode()

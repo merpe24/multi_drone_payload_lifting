@@ -58,8 +58,8 @@ class AprilTagOdom(Node):
 
             t = tf.transform.translation
             # rotate camera->tag optical (x,y) into NED (N,E); z is straight down
-            vN = c * t.x - s * t.y
-            vE = s * t.x + c * t.y
+            vN = t.x * c - t.y * s
+            vE = t.x * s + t.y * c
             drone_n = tN - vN
             drone_e = tE - vE
             drone_d = tD - t.z
