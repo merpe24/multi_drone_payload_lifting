@@ -10,6 +10,6 @@
       blur: 0.0
       refine: true
     tag:
-      ids: [0, 1, 2]
-      frames: [tag0, tag1, tag2]
-      sizes: [0.4, 0.4, 0.4]
+      ids: [0, 1, 2, 3, 4, 5]
+      frames: [tag0, tag1, tag2, tag3, tag4, tag5]
+      sizes: [0.4, 0.4, 0.4, 0.4, 0.4, 0.4]

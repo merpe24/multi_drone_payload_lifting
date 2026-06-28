@@ -4,6 +4,8 @@
     <static>true</static>
     <pose>0 0 0.02 0 0 0</pose> <!-- Sits on top of the granite ground-->
     <link name="base">
+    
+      <!-- First row -->
       <visual name="tag0">
         <pose>0 0 0 0 0 0</pose>
         <geometry><box><size>0.5 0.5 0.002</size></box></geometry>
@@ -33,6 +35,41 @@
           <diffuse>1 1 1 1</diffuse>
           <pbr><metal>
             <albedo_map>model://apriltag_tags/materials/textures/tag36_11_00002.png</albedo_map>
+            <metalness>0.0</metalness><roughness>0.9</roughness>
+          </metal></pbr>
+        </material>
+      </visual>
+
+      <!-- Second row -->
+      <visual name="tag3">
+        <pose>2 0 0 0 0 0</pose>
+        <geometry><box><size>0.5 0.5 0.002</size></box></geometry>
+        <material>
+          <diffuse>1 1 1 1</diffuse>
+          <pbr><metal>
+            <albedo_map>model://apriltag_tags/materials/textures/tag36_11_00003.png</albedo_map>
+            <metalness>0.0</metalness><roughness>0.9</roughness>
+          </metal></pbr>
+        </material>
+      </visual>
+      <visual name="tag4">
+        <pose>2 1.5 0 0 0 0</pose>
+        <geometry><box><size>0.5 0.5 0.002</size></box></geometry>
+        <material>
+          <diffuse>1 1 1 1</diffuse>
+          <pbr><metal>
+            <albedo_map>model://apriltag_tags/materials/textures/tag36_11_00004.png</albedo_map>
+            <metalness>0.0</metalness><roughness>0.9</roughness>
+          </metal></pbr>
+        </material>
+      </visual>
+      <visual name="tag5">
+        <pose>2 3.0 0 0 0 0</pose>
+        <geometry><box><size>0.5 0.5 0.002</size></box></geometry>
+        <material>
+          <diffuse>1 1 1 1</diffuse>
+          <pbr><metal>
+            <albedo_map>model://apriltag_tags/materials/textures/tag36_11_00005.png</albedo_map>
             <metalness>0.0</metalness><roughness>0.9</roughness>
           </metal></pbr>
         </material>

@@ -10,15 +10,6 @@ from px4_msgs.msg import (
 )
 
 class FlowHoverTest(Node):
-    """
-    Single-drone takeoff + hover, with NO companion dependency.
-    Purpose: validate optical-flow-only flight (GPS disabled, airframe 4021).
-
-    State: stream setpoints -> OFFBOARD -> arm -> climb to hover_z -> hold.
-    No landing phase: stop with Ctrl+C and observe whether the EKF2
-    position estimate holds or drifts under flow-only.
-    """
-
     def __init__(self):
         super().__init__('flow_hover_test')
 
@@ -27,6 +18,9 @@ class FlowHoverTest(Node):
         # or its arm/mode commands hit drone 0 (target_system 1).
         self.declare_parameter('instance', 0)
         self.instance = self.get_parameter('instance').value
+        
+        self.declare_parameter('hold_only', False)
+        self.hold_only = self.get_parameter('hold_only').value
 
         px4_qos = QoSProfile(
             reliability=ReliabilityPolicy.BEST_EFFORT,
@@ -145,6 +139,10 @@ class FlowHoverTest(Node):
             return
 
         # Phase 4: go to waypoint
+        if self.hold_only:
+            self._publish_setpoint(0.0, 0.0, self.hover_z)
+            return
+        
         if not self.reached_waypoint:
             self.path_progress += self.desired_speed * self.dt
             if self.path_progress >= self.path_distance:
